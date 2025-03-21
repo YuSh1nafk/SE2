@@ -34,32 +34,25 @@
         font-size: 1.2em;
         color: #794b31;
     }
-    .footer .hotline {
+    .footer .element {
         font-size: 1em;
         color: #794b31;
     }
-    .footer .address {
-        font-size: 1em;
-        color: #794b31;
-    }
-    .footer .company {
-        font-size: 1em;
-        color: #794b31;
-    }
+
 </style>
 <body>
-<footer class="footer">
+<footer class="footer" th:fragment="footer">
     <div class="container">
-        <div class="hotline">
+        <div class="element">
             <i class="fas fa-phone"></i>
             Hotline: 1800-1234
         </div>
 
-        <div class="company">
+        <div class="element">
             © Created by Mercy Company | All rights reserved.
         </div>
 
-        <div class="address">
+        <div class="element">
             <i class="fas fa-map-marker-alt"></i>
             Số 10, Quận Cầu Giấy, Hà Nội
         </div>
