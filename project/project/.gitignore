@@ -32,3 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 .idea/
+.idea/compiler.xml
+.idea/misc.xml
+.idea/vcs.xml
