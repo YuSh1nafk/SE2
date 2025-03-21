@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse All Rooms</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{../static/styles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .room-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .room-card img {
+            width: 100%;
+            height: 150px; /* Chiều cao cố định cho ảnh */
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 0;
+            object-fit: cover; /* Đảm bảo ảnh không bị méo */
+        }
+        .room-card .content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .room-card h3 {
+            font-size: 1.5em;
+            color: #1E0E62;
+            margin-bottom: 10px;
+        }
+        .room-card p {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        .room-card .price {
+            font-size: 1.2em;
+            color: #1E0E62;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .room-card .detail-link {
+            color: #794b31;
+            text-decoration: none;
+            display: block;
+            margin-top: auto; /* Đẩy liên kết xuống dưới cùng */
+        }
+        .room-card .detail-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -50px;
+            margin-left: -15px;
+        }
+        .col-md-3 {
+            display: flex;
+            padding-right: 15px;
+            padding-left: 15px;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+        @media (max-width: 992px) {
+            .col-md-3 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        @media (max-width: 576px) {
+            .col-md-3 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header Fragment -->
+<div th:replace="header :: header"></div>
+
+<!-- Main Content / not have database yet  -->
+<main>
+    <div class="container">
+        <div class="row">
+            <!-- Standard Room -->
+            <div class="col-md-3">
+                <div class="room-card">
+                    <img src="..\static\assets\Standard Room\standard01.jpg" alt="Standard Room">
+                    <div class="content">
+                        <h3>Standard Room</h3>
+                        <p>An affordable standard room ideal for short stays.</p>
+                        <div class="price">$100</div>
+                        <a href="#" class="detail-link">View detail ></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Couple Simple Room -->
+            <div class="col-md-3">
+                <div class="room-card">
+                    <img src="..\static\assets\Couple Simple Room\couple07.jpg" alt="Couple Simple Room">
+                    <div class="content">
+                        <h3>Couple Simple Room</h3>
+                        <p>A simple room for couples, including unlimited recipes, plans, and programs.</p>
+                        <div class="price">$170</div>
+                        <a href="#" class="detail-link">View detail ></a>
+                    </div>
+                </div>
+            </div>
+            <!-- VIP Suite -->
+            <div class="col-md-3">
+                <div class="room-card">
+                    <img src="..\static\assets\VIP Suite\vip03.jpg" alt="VIP Suite">
+                    <div class="content">
+                        <h3>VIP Suite</h3>
+                        <p>A luxurious high-end room offering an elite experience with special amenities and services.</p>
+                        <div class="price">$666</div>
+                        <a href="#" class="detail-link">View detail ></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Deluxe Room -->
+            <div class="col-md-3">
+                <div class="room-card">
+                    <img src="..\static\assets\Deluxe Room\deluxe01.jpg" alt="Deluxe Room">
+                    <div class="content">
+                        <h3>Deluxe Room</h3>
+                        <p>A premium room with spacious layout and modern amenities, ideal for a comfortable stay.</p>
+                        <div class="price">$420</div>
+                        <a href="#" class="detail-link">View detail ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="footer :: footer"></div>
+
+</body>
+</html>
