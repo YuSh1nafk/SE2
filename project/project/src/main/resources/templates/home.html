@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercy Hotel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{../static/styles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #583101;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            margin-bottom: 20px;
+        }
+
+        /*.about-section {*/
+        /*    display: flex;*/
+        /*    flex-direction: row;*/
+
+        /*    align-items: center;*/
+        /*    justify-content: space-between;*/
+        /*    margin-bottom: 40px;*/
+
+        /*}*/
+
+        /*.about-content {*/
+        /*    flex: 1;*/
+        /*    margin-right: 50px;*/
+
+        /*}*/
+
+        /*.about-images {*/
+        /*    flex: 1;*/
+        /*    max-width: 600px;*/
+        /*    position: relative;*/
+        /*    display: flex;*/
+        /*    justify-content: flex-end;*/
+        /*    align-items: center;*/
+        /*}*/
+
+        /*.about-images img {*/
+        /*    border-radius: 10px;*/
+        /*    object-fit: cover;*/
+        /*}*/
+
+        /*.img-back {*/
+        /*    width: 60%;*/
+        /*    height: auto;*/
+        /*}*/
+
+        /*.img-front {*/
+        /*    width: 50%;*/
+        /*    height: auto;*/
+        /*    position: absolute;*/
+        /*    bottom: -20px;*/
+        /*    right: 40%;*/
+        /*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
+        /*}*/
+        .about-section {
+            margin-bottom: 40px;
+        }
+
+        .about-content {
+            text-align: left;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .about-images {
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .about-images img {
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .img-back {
+            width: 60%; /* Giảm kích thước ảnh nền */
+            height: auto;
+        }
+
+        .img-front {
+            width: 50%;
+            height: auto;
+            position: absolute;
+            bottom: -20px;
+            right: 40%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .about-section .row {
+                flex-direction: column;
+            }
+
+            .about-content, .about-images {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .img-back {
+                width: 60%;
+            }
+
+            .img-front {
+                width: 50%;
+                right: 40%;
+                bottom: -10px;
+            }
+            .about-images {
+                position: relative;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .img-front {
+                width: 50%;
+                right: 40%;
+                bottom: -5px;
+            }
+            .about-images {
+                position: relative;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 20px;
+            }
+        }
+        .box2{
+            margin-top: 100px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            height: 500px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+
+        .card-body {
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            padding: 15px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .standard-room {
+
+            background-image: url('../static/assets/Standard Room/standard01.jpg');
+        }
+
+        .simple-room {
+            height: 250px;
+            background-image: url('../static/assets/Couple Simple Room/couple01.jpg');
+        }
+
+        .deluxe-room {
+
+            background-image: url('../static/assets/Deluxe Room/deluxe01.jpg');
+        }
+
+        .superior-room {
+            height: 250px;
+            background-image: url('../static/assets/Superior Room/super01.jpg');
+        }
+
+        .family-room {
+            height: 250px;
+            background-image: url('../static/assets/Family Room/family01.jpg');
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+    </style>
+</head>
+<body>
+<!-- Header Fragment -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- Main Content -->
+<main>
+    <div class="container my-5">
+        <div class="about-section">
+            <div class="row">
+                <!-- About Content -->
+                <div class="col-md-6 col-12">
+                    <div class="about-content">
+                        <h2>ABOUT US</h2>
+                        <p class="lead font-weight-bold">Welcome to Mercy Hotel!</p>
+                        <p>
+                            At Mercy Hotel, we are committed to providing you with an exceptional stay. With luxurious and modern amenities, our hotel is the ideal destination for both leisure and business travelers. We take pride in our professional staff, who are always ready to serve and meet all your needs. From comfortable rooms to top-notch facilities, every detail is carefully curated to ensure your utmost satisfaction.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- About Images -->
+                <div class="col-md-6 col-12">
+                    <div class="about-images">
+                        <img src="../static/assets/Home/01.jpg" class="img-fluid img-back" alt="Responsive image">
+                        <img src="../static/assets/Home/02.jpg" class="img-fluid img-front" alt="Responsive image">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box2">
+        <div class="row">
+            <div class="col-12">
+                <h2>OUR CHOICE</h2>
+                <p class="lead font-weight-bold " >The best room just for you!</p>
+            </div>
+        </div>
+
+        <div class="row card-container">
+            <div class="col-md-4">
+                <div class="card standard-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Standard Room</h5>
+                        <p class="card-text">$100/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card deluxe-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Deluxe Room</h5>
+                        <p class="card-text">$220/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card simple-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Sample Simple Room</h5>
+                        <p class="card-text">$170/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card superior-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Superior Room</h5>
+                        <p class="card-text">$420/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card family-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Family Room</h5>
+                        <p class="card-text">$300/night</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
