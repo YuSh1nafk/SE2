@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse All Rooms</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{../static/styles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .room-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .room-card img {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 0;
+            object-fit: cover;
+        }
+        .room-card .content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .room-card h3 {
+            font-size: 1.5em;
+            color: #1E0E62;
+            margin-bottom: 10px;
+        }
+        .room-card p {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        .room-card .price {
+            font-size: 1.2em;
+            color: #1E0E62;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .room-card .detail-link {
+            color: #794b31;
+            text-decoration: none;
+            display: block;
+            margin-top: auto;
+        }
+        .room-card .detail-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -50px;
+            margin-left: -15px;
+        }
+        .col-md-3 {
+            display: flex;
+            padding-right: 15px;
+            padding-left: 15px;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+        @media (max-width: 992px) {
+            .col-md-3 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        @media (max-width: 576px) {
+            .col-md-3 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header Fragment -->
+<div th:replace="header :: header"></div>
+<div th:replace="searchbox :: searchbox"></div>
+
+<!-- Main Content -->
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3" th:each="room : ${rooms}">
+                <div class="room-card">
+                    <img th:src="@{${room.image_url}}" alt="Room Image">
+                    <div class="content">
+                        <h3 th:text="${room.type}"></h3>
+                        <p th:text="${room.description}"></p>
+                        <div class="price" th:text="'$' + ${room.price}"></div>
+                        <a th:href="@{/room/detail/{id}(id=${room.id})}" class="detail-link">View detail ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="footer :: footer"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
