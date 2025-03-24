@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{../static/styles.css}">
+</head>
+<style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #E6E6E6;
+        padding: 20px 0;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+    .footer .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+    }
+    .footer .hotline, .footer .address, .footer .company {
+        display: flex;
+        align-items: center;
+    }
+    .footer .hotline i, .footer .address i {
+        margin-right: 8px;
+        font-size: 1.2em;
+        color: #794b31;
+    }
+    .footer .element {
+        font-size: 1em;
+        color: #794b31;
+    }
+
+</style>
+<body>
+<footer class="footer" th:fragment="footer">
+    <div class="container">
+        <div class="element">
+            <i class="fas fa-phone"></i>
+            Hotline: 1800-1234
+        </div>
+
+        <div class="element">
+            © Created by Mercy Company | All rights reserved.
+        </div>
+
+        <div class="element">
+            <i class="fas fa-map-marker-alt"></i>
+            Số 10, Quận Cầu Giấy, Hà Nội
+        </div>
+    </div>
+</footer>
+</body>
+</html>
