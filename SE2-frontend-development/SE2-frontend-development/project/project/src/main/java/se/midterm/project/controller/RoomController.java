@@ -57,6 +57,7 @@ public class RoomController {
             }
         });
         model.addAttribute("rooms", availableRooms);
+        model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }
 }
