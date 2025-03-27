@@ -25,6 +25,7 @@ public class RoomController {
             }
         });
         model.addAttribute("rooms", rooms);
+        model.addAttribute("activePage", "home");
         return "home";
     }
 
@@ -37,6 +38,7 @@ public class RoomController {
             }
         });
         model.addAttribute("rooms", rooms);
+        model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }
 

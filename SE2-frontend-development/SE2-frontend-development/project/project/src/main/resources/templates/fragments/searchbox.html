@@ -4,32 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    .search-form {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        color: #583101;
-    }
-    .search-form .form-group {
-        margin-bottom: 0;
-    }
-    .search-form .btn {
-        width: 100%;
-        background-color: #583101;
-        border: none;
-        color: white;
-    }
-    .col-md-2 {
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/styles.css}">
+<!--  <style>-->
+<!--    .search-form {-->
+<!--        background-color: #f8f9fa;-->
+<!--        padding: 20px;-->
+<!--        border-radius: 20px;-->
+<!--        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--        color: #583101;-->
+<!--    }-->
+<!--    .search-form .form-group {-->
+<!--        margin-bottom: 0;-->
+<!--    }-->
+<!--    .search-form .btn {-->
+<!--        width: 100%;-->
+<!--        background-color: #583101;-->
+<!--        border: none;-->
+<!--        color: white;-->
+<!--    }-->
+<!--    .col-md-2 {-->
+<!--        position: relative;-->
+<!--        left: 50%;-->
+<!--        transform: translateX(-50%);-->
+<!--    }-->
+<!--  </style>-->
 </head>
 <body>
-<div class="container my-5" th:fragment="searchbox">
+<div class="container " th:fragment="searchbox">
   <div class="row align-items-end justify-content-center">
     <div class="col-md-10">
       <div class="search-form">
