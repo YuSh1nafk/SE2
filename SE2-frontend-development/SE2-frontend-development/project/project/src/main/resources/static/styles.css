@@ -206,6 +206,18 @@ body {
     margin-bottom: 15px;
 }
 
+.room-card .linking-view-details {
+    color: #794b31;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 10px;
+    }
+
+.room-card .linking-view-details:hover {
+        text-decoration: underline;
+    }
+
 /* ========== FOOTER ========== */
 footer {
     background-color: #343a40;
