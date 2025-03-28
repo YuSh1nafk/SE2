@@ -6,7 +6,7 @@
     <title th:text="${room.roomType} + ' - Mercy Hotel'">Detail - Mercy Hotel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/styles.css}">
+<!--    <link rel="stylesheet" th:href="@{/styles.css}">-->
     <style>
         .container {
             padding: 20px;
@@ -22,36 +22,33 @@
             color: gray;
         }
 
+        .amenities-section {
+            margin: 1rem 0;
+            font-family: 'Arial', sans-serif;
+        }
+
         .amenity-item {
-
             margin-bottom: 8px;
-
             border-radius: 5px;
             display: flex;
             align-items: center;
         }
+
         .amenity-item i {
             margin-right: 10px;
-            color: #007bff;
+            color: #000000;
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
         }
-        .amenities-section {
-            margin: 1rem 0;
-        }
-
-        .amenity-item {
-            margin-bottom: 0rem;
-        }
-
         .amenity-title {
-
-            margin-bottom: 0.5rem;
+            margin-bottom: 0;
             display: flex;
             align-items: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
         }
-
         .amenity-icon {
             margin-right: 10px;
             color: #007bff;
@@ -59,23 +56,6 @@
             width: 25px;
             text-align: center;
         }
-
-        /* Phân cấp kích thước tiêu đề */
-        .amenity-item h3 {
-            font-size: 1.4rem;
-            color: #222;
-        }
-
-        .amenity-item h4 {
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .amenity-item h5 {
-            font-size: 1.1rem;
-            color: #444;
-        }
-        /* CSS mới cho gallery với nút điều hướng */
         .gallery-wrapper {
             position: relative;
             margin-top: 20px;
@@ -86,19 +66,19 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             gap: 15px;
-            padding: 10px 0;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .gallery-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera*/
+            display: none;
         }
         .gallery-thumbnail {
             width: 160px;
             height: 100px;
             flex: 0 0 auto;
             object-fit: cover;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -132,7 +112,7 @@
         }
         .scroll-btn:hover {
             background: #f8f9fa;
-            color: #007bff;
+            color: #583101;
         }
         .main-room-image {
             width: 100%;
@@ -152,7 +132,7 @@
         }
     </style>
 </head>
-<body>
+<body class="detail-page">
 <!-- Header Fragment -->
 <div th:replace="~{fragments/header :: header}"></div>
 
@@ -162,14 +142,14 @@
         <div class="col-md-7">
             <img src="../static/assets/images/rooms/03.jpg" class="main-room-image" alt="Room Image">
 
-            <!-- Gallery với nút điều hướng -->
+            <!-- Gallery  -->
             <div class="gallery-wrapper">
                 <button class="scroll-btn left" onclick="scrollGallery(-150)">
                     <i class="fas fa-chevron-left"></i>
                 </button>
 
                 <div class="gallery-container" id="galleryContainer">
-                    <!-- Các ảnh thumbnail -->
+                    <!-- Thumbnail -->
                     <img src="../static/assets/images/rooms/03.jpg"
                          class="gallery-thumbnail"
                          onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
@@ -193,9 +173,9 @@
             </div>
         </div>
 
-        <!-- Phần thông tin chi tiết -->
+        <!-- Detail -->
         <div class="col-md-4">
-            <h1 th:text="${room.roomType}">Standard Room</h1>
+            <h1 th:text="${room.roomType}" style="color:#1E0E62">Standard Room</h1>
             <div class="room-meta mb-4">
                 <ul class="list">
                     <li class="mb-2"><strong>Room Number:</strong> <span th:text="${room.roomNumber}">101</span></li>
@@ -208,7 +188,7 @@
             </div>
 
             <div class="amenities-section">
-                <h3>Offered Amenities</h3>
+                <h3 style="color:#484848">Offered Amenities</h3>
 <!--                kitchen-->
                 <div th:if="${room.amenities.contains('kitchen')}" class="amenity-item">
                     <h3 class="amenity-title">
