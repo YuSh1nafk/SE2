@@ -124,16 +124,25 @@
 </head>
 <body>
 <div class="signup-container">
-    <h2 class="signup-title">Sign Up Now</h2>
-    <form th:action="@{/signup}" method="post">
+    <h2 class="signup-title">Sign Up </h2>
+    <form th:action="@{/auth/register}" th:object="${userDto}" method="post">
         <div class="form-group">
-            <input type="email" class="form-control" id="email" name="email"
-                   placeholder="Your email" required>
+            <input type="text" class="form-control" id="username" th:field="*{username}"
+                   placeholder="Username" required>
+            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></small>
         </div>
 
         <div class="form-group">
-            <input type="password" class="form-control" id="password" name="password"
+            <input type="email" class="form-control" id="email" th:field="*{email}"
+                   placeholder="Your email" required>
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></small>
+            <small th:if="${emailError != null}" th:text="${emailError}" class="error-message"></small>
+        </div>
+
+        <div class="form-group">
+            <input type="password" class="form-control" id="password" th:field="*{password}"
                    placeholder="Your password" required>
+            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></small>
         </div>
 
         <div class="terms-container">
@@ -148,7 +157,7 @@
         </div>
 
         <div class="login-link">
-            You already have an Account? <a th:href="@{/signin}">Sign In</a>
+            You already have an Account?  <a class="nav-link" href="/auth/login">Sign In</a>
         </div>
     </form>
 </div>

@@ -1,6 +1,9 @@
 package se.midterm.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,28 +18,27 @@ public class RoomController {
 
     @Autowired
     private RoomRepository roomRepository;
-
     @GetMapping("/")
     public String home(Model model) {
         List<Room> rooms = roomRepository.findAll();
-        rooms.forEach(room -> {
-            if (!room.getPhotoUrl().startsWith("/")) {
-                room.setPhotoUrl("/" + room.getPhotoUrl());
-            }
-        });
+        formatPhotoUrls(rooms);
         model.addAttribute("rooms", rooms);
         model.addAttribute("activePage", "home");
         return "home";
     }
-
+    @GetMapping("/admin/rooms")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String manageRooms(Model model) {
+        List<Room> rooms = roomRepository.findAll();
+        formatPhotoUrls(rooms);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("activePage", "manageRooms");
+        return "admin/rooms";
+    }
     @GetMapping("/browseRoom")
     public String browseAllRooms(Model model) {
         List<Room> rooms = roomRepository.findAll();
-        rooms.forEach(room -> {
-            if (!room.getPhotoUrl().startsWith("/")) {
-                room.setPhotoUrl("/" + room.getPhotoUrl());
-            }
-        });
+        formatPhotoUrls(rooms);
         model.addAttribute("rooms", rooms);
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
@@ -51,13 +53,16 @@ public class RoomController {
         LocalDate checkInDate = LocalDate.parse(checkInDateStr);
         LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
         List<Room> availableRooms = roomRepository.findAvailableRoomsByTypeAndDate(roomType, checkInDate, checkOutDate);
-        availableRooms.forEach(room -> {
+        formatPhotoUrls(availableRooms);
+        model.addAttribute("rooms", availableRooms);
+        model.addAttribute("activePage", "browseRoom");
+        return "browseRoom";
+    }
+    private void formatPhotoUrls(List<Room> rooms) {
+        rooms.forEach(room -> {
             if (!room.getPhotoUrl().startsWith("/")) {
                 room.setPhotoUrl("/" + room.getPhotoUrl());
             }
         });
-        model.addAttribute("rooms", availableRooms);
-        model.addAttribute("activePage", "browseRoom");
-        return "browseRoom";
     }
 }

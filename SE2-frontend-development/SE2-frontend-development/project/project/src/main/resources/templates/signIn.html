@@ -117,10 +117,17 @@
 <body>
 <div class="signin-container">
     <h2 class="signin-title">Sign In</h2>
+    <div th:if="${loginError}" class="error-message" style="color: red; text-align: center; margin-bottom: 15px;">
+        <span th:text="${loginError}"></span>
+    </div>
+    <div th:if="${registerSuccess}" class="success-message" style="color: green; text-align: center; margin-bottom: 15px;">
+        <span th:text="${registerSuccess}"></span>
+    </div>
+
     <form th:action="@{/login}" method="post">
         <div class="form-group">
-            <input type="email" class="form-control" id="email" name="email"
-                   placeholder="Your email" required>
+            <input type="text" class="form-control" id="username" name="username"
+                   placeholder="Username" required>
         </div>
         <div class="form-group">
             <input type="password" class="form-control" id="password"
@@ -131,7 +138,7 @@
             <button type="submit" class="btn-signin">Sign In</button>
         </div>
         <div class="signup-link">
-            Don't have an account? <a th:href="@{/signup}">Sign Up</a>
+            Don't have an account?  <a class="nav-link" href="/auth/register">Sign Up</a>
         </div>
     </form>
 </div>
