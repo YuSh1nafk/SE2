@@ -128,7 +128,7 @@
     <form th:action="@{/auth/register}" th:object="${userDto}" method="post">
         <div class="form-group">
             <input type="text" class="form-control" id="username" th:field="*{username}"
-                   placeholder="Username" required>
+                   placeholder="Your username" required>
             <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></small>
         </div>
 
