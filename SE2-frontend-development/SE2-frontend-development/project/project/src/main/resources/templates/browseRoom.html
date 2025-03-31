@@ -27,7 +27,7 @@
                         <h3 th:text="${room.roomType}"></h3>
                         <p th:text="${room.description}"></p>
                         <div class="price" th:text="'$' + ${room.roomPrice}"></div>
-                        <a th:href="@{'/rooms/' + ${room.id}}" class="linking-view-details">View Details</a>
+                        <a th:href="@{/rooms/{id}(id=${room.id})}" class="linking-view-details">View Details</a>
                     </div>
                 </div>
             </div>

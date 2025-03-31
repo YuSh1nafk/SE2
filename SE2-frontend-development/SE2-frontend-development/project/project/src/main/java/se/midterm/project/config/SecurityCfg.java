@@ -12,12 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+
 public class SecurityCfg {
     private final JpaUserDetailsService jpaUserDetailsService;
 
     public SecurityCfg(JpaUserDetailsService jpaUserDetailsService) {
         this.jpaUserDetailsService = jpaUserDetailsService;
     }
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,8 +29,11 @@ public class SecurityCfg {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/rooms/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**").permitAll()
+                        .anyRequest().authenticated()
                 )
+
                 .userDetailsService(jpaUserDetailsService)
                 .formLogin(form -> form
                         .loginPage("/auth/login")
@@ -55,6 +60,8 @@ public class SecurityCfg {
                 )
                 .build();
     }
+
+
 
     @Bean
     PasswordEncoder passwordEncoder() {

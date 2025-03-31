@@ -40,6 +40,15 @@ public class Room {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "area")
+    private double roomArea;
+
+    @Column(name = "capacity")
+    private int roomCapacity;
+
+    @Column(name = "amenities")
+    private String amenities;
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;
 

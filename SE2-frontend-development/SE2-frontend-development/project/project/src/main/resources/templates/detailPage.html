@@ -185,6 +185,7 @@
                     <li class="mb-2"><strong>Price:</strong> <span class="font-weight-bold"
                                                                    th:text="'$' + ${#numbers.formatDecimal(room.roomPrice, 1, 2)} + '/night'">$100/night</span></li>
                     <li class="mb-2"><strong>Description:</strong> <span th:text="${room.description}">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></li>
+
                 </ul>
             </div>
 
@@ -229,7 +230,7 @@
             </div>
 
             <div class="mt-4">
-                <a th:href="@{/booking?roomId=${room.id}}" class="btn btn-lg ">
+                <a th:href="@{/booking(roomId=${room.id})}" class="btn btn-lg ">
                     Book Now
                 </a>
             </div>

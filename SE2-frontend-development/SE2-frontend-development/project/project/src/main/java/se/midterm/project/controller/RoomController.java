@@ -58,6 +58,25 @@ public class RoomController {
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }
+
+    @GetMapping("/rooms/{id}")
+    public String viewRoomDetails(@PathVariable Long id, Model model) {
+        System.out.println("Fetching room with ID: " + id);
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid room Id: " + id));
+        model.addAttribute("room", room);
+        return "detailPage";
+    }
+
+    @GetMapping("/booking")
+    public String showBookingForm(@RequestParam("roomId") Long roomId, Model model) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + roomId));
+        model.addAttribute("room", room);
+        return "bookingForm";
+    }
+
+
     private void formatPhotoUrls(List<Room> rooms) {
         rooms.forEach(room -> {
             if (!room.getPhotoUrl().startsWith("/")) {

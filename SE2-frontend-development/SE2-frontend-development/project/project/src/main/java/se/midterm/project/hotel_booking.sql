@@ -108,16 +108,19 @@ CREATE TABLE `room` (
   `status` enum('Available','Booked') DEFAULT 'Available',
   `image_url` varchar(255) DEFAULT NULL,
   `description` TEXT
+  `area` double,
+  `capacity` int,
+  `amenities` varchar(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `room`
 --
 
-INSERT INTO `room` (`id`, `number`, `type`, `price`, `status`, `image_url`, `description`) VALUES
-(1, '101', 'Couple Simple Room', 60.00, 'Available', 'assets/images/rooms/Couple Simple Room/couple01.jpg','A cozy room for couples.'),
-(2, '102', 'Deluxe Room', 80.00, 'Booked', 'assets/images/rooms/Deluxe Room/deluxe01.jpg', 'A luxurious deluxe room.'),
-(3, '103', 'Family Room', 100.00, 'Booked', 'assets/images/rooms/Family Room/family01.jpg', 'Spacious room for families.');
+INSERT INTO `room` (`id`, `number`, `type`, `price`, `status`, `image_url`, `description`, `area`, `capacity`, `amenities`) VALUES
+(1, '101', 'Couple Simple Room', 60.00, 'Available', 'assets/images/rooms/Couple Simple Room/couple01.jpg', 'A cozy room for couples.', 25.5, 2, 'WiFi, TV'),
+(2, '102', 'Deluxe Room', 80.00, 'Booked', 'assets/images/rooms/Deluxe Room/deluxe01.jpg', 'A luxurious deluxe room.', 30.0, 2, 'WiFi, Mini Bar'),
+(3, '103', 'Family Room', 100.00, 'Booked', 'assets/images/rooms/Family Room/family01.jpg', 'Spacious room for families.', 40.0, 4, 'WiFi, TV, Balcony');
 
 --
 -- Indexes for dumped tables
@@ -179,6 +182,9 @@ ALTER TABLE `customer`
 --
 ALTER TABLE `room`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY COLUMN area DOUBLE NOT NULL DEFAULT 0.0,
+  MODIFY COLUMN capacity INT NOT NULL DEFAULT 0,
+  MODIFY COLUMN amenities VARCHAR(255) NOT NULL DEFAULT '';
 
 --
 -- Constraints for dumped tables
