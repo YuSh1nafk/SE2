@@ -29,9 +29,7 @@ public class SecurityCfg {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/rooms/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 .userDetailsService(jpaUserDetailsService)
