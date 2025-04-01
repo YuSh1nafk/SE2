@@ -121,7 +121,32 @@ INSERT INTO `room` (`id`, `number`, `type`, `price`, `status`, `image_url`, `des
 (1, '101', 'Couple Simple Room', 60.00, 'Available', 'assets/images/rooms/Couple Simple Room/couple01.jpg', 'A cozy room for couples.', 25.5, 2, 'WiFi, TV'),
 (2, '102', 'Deluxe Room', 80.00, 'Booked', 'assets/images/rooms/Deluxe Room/deluxe01.jpg', 'A luxurious deluxe room.', 30.0, 2, 'WiFi, Mini Bar'),
 (3, '103', 'Family Room', 100.00, 'Booked', 'assets/images/rooms/Family Room/family01.jpg', 'Spacious room for families.', 40.0, 4, 'WiFi, TV, Balcony');
+ALTER TABLE room 
+ADD COLUMN image_url2 VARCHAR(255) DEFAULT NULL AFTER image_url,
+ADD COLUMN image_url3 VARCHAR(255) DEFAULT NULL AFTER image_url2,
+ADD COLUMN image_url4 VARCHAR(255) DEFAULT NULL AFTER image_url3,
+ADD COLUMN image_url5 VARCHAR(255) DEFAULT NULL AFTER image_url4,
+ADD COLUMN image_url6 VARCHAR(255) DEFAULT NULL AFTER image_url5,
+ADD COLUMN image_url7 VARCHAR(255) DEFAULT NULL AFTER image_url6;
 
+UPDATE room SET 
+  image_url2 = 'assets/images/rooms/Couple Simple Room/couple02.jpg',
+  image_url3 = 'assets/images/rooms/Couple Simple Room/couple03.jpg',
+  image_url4 = 'assets/images/rooms/Couple Simple Room/couple04.jpg',
+  image_url5 = 'assets/images/rooms/Couple Simple Room/couple05.jpg',
+  image_url6 = 'assets/images/rooms/Couple Simple Room/couple06.jpg',
+  image_url7 = 'assets/images/rooms/Couple Simple Room/couple07.jpg'
+WHERE id = 1;
+
+UPDATE room SET 
+  image_url2 = 'assets/images/rooms/Deluxe Room/deluxe02.jpg',
+  image_url3 = 'assets/images/rooms/Deluxe Room/deluxe03.jpg'
+WHERE id = 2;
+
+UPDATE room SET 
+  image_url2 = 'assets/images/rooms/Family Room/family02.jpg',
+  image_url3 = 'assets/images/rooms/Family Room/family03.jpg'
+WHERE id = 3;
 --
 -- Indexes for dumped tables
 --
