@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('ADMIN') DEFAULT 'ADMIN'
+                         `id` int(11) NOT NULL,
+                         `name` varchar(100) NOT NULL,
+                         `email` varchar(100) NOT NULL,
+                         `password` varchar(255) NOT NULL,
+                         `role` enum('ADMIN') DEFAULT 'ADMIN'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `role`) VALUES
-(1, 'Admin', 'admin@demo.com', '123456', 'ADMIN');
+    (1, 'Admin', 'admin@demo.com', '123456', 'ADMIN');
 
 -- --------------------------------------------------------
 
@@ -49,18 +49,18 @@ INSERT INTO `admin` (`id`, `name`, `email`, `password`, `role`) VALUES
 --
 
 CREATE TABLE `booking` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `room_id` int(11) NOT NULL,
-  `checkin` date NOT NULL,
-  `checkout` date NOT NULL,
-  `status` enum('Pending','Confirmed','Cancelled') DEFAULT 'Pending',
-  `guest_fullName` varchar(100),
-  `guest_email` varchar(100),
-  `adults` int,
-  `children` int,
-  `total_guest` int,
-  `confirmation_Code` varchar(50)
+                           `id` int(11) NOT NULL,
+                           `customer_id` int(11) NOT NULL,
+                           `room_id` int(11) NOT NULL,
+                           `checkin` date NOT NULL,
+                           `checkout` date NOT NULL,
+                           `status` enum('Pending','Confirmed','Cancelled') DEFAULT 'Pending',
+                           `guest_fullName` varchar(100),
+                           `guest_email` varchar(100),
+                           `adults` int,
+                           `children` int,
+                           `total_guest` int,
+                           `confirmation_Code` varchar(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -68,8 +68,8 @@ CREATE TABLE `booking` (
 --
 
 INSERT INTO `booking` (`id`, `customer_id`, `room_id`, `checkin`, `checkout`, `status`, `guest_fullName`, `guest_email`, `adults`, `children`, `total_guest`, `confirmation_Code`) VALUES
-(1, 1, 1, '2024-03-25', '2024-03-27', 'Confirmed', 'Le Phuong Thao', 'thao@demo.com', 2, 0, 2, 'ABC123'),
-(2, 2, 3, '2024-03-28', '2024-03-30', 'Pending', 'Duy Vuong', 'vuong@demo.com', 1, 1, 2, 'DEF456');
+                                                                                                                                                                                       (1, 1, 1, '2024-03-25', '2024-03-27', 'Confirmed', 'Le Phuong Thao', 'thao@demo.com', 2, 0, 2, 'ABC123'),
+                                                                                                                                                                                       (2, 2, 3, '2024-03-28', '2024-03-30', 'Pending', 'Duy Vuong', 'vuong@demo.com', 1, 1, 2, 'DEF456');
 
 -- --------------------------------------------------------
 
@@ -78,12 +78,12 @@ INSERT INTO `booking` (`id`, `customer_id`, `room_id`, `checkin`, `checkout`, `s
 --
 
 CREATE TABLE `customer` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `image_url` varchar(255) DEFAULT NULL
+                            `id` int(11) NOT NULL,
+                            `name` varchar(100) NOT NULL,
+                            `email` varchar(100) NOT NULL,
+                            `password` varchar(255) NOT NULL,
+                            `phone` varchar(20) NOT NULL,
+                            `image_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -91,8 +91,8 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`id`, `name`, `email`, `password`, `phone`, `image_url`) VALUES
-(1, 'Le Phuong Thao', 'thao@demo.com', '123456', '0123456789', 'assets/images/profile/customer1.jpg'),
-(2, 'Duy Vuong', 'vuong@demo.com', '123456', '0987654321', 'assets/images/profile/customer2.jpg');
+                                                                                     (1, 'Le Phuong Thao', 'thao@demo.com', '123456', '0123456789', 'assets/images/profile/customer1.jpg'),
+                                                                                     (2, 'Duy Vuong', 'vuong@demo.com', '123456', '0987654321', 'assets/images/profile/customer2.jpg');
 
 -- --------------------------------------------------------
 
@@ -101,16 +101,16 @@ INSERT INTO `customer` (`id`, `name`, `email`, `password`, `phone`, `image_url`)
 --
 
 CREATE TABLE `room` (
-  `id` int(11) NOT NULL,
-  `number` varchar(10) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `status` enum('Available','Booked') DEFAULT 'Available',
-  `image_url` varchar(255) DEFAULT NULL,
-  `description` TEXT
-  `area` double,
-  `capacity` int,
-  `amenities` varchar(255)
+                        `id` int(11) NOT NULL,
+                        `number` varchar(10) NOT NULL,
+                        `type` varchar(50) NOT NULL,
+                        `price` decimal(10,2) NOT NULL,
+                        `status` enum('Available','Booked') DEFAULT 'Available',
+                        `image_url` varchar(255) DEFAULT NULL,
+                        `description` TEXT,
+                        `area` double,
+                        `capacity` int,
+                        `amenities` varchar(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -118,26 +118,52 @@ CREATE TABLE `room` (
 --
 
 INSERT INTO `room` (`id`, `number`, `type`, `price`, `status`, `image_url`, `description`, `area`, `capacity`, `amenities`) VALUES
-(1, '101', 'Couple Simple Room', 60.00, 'Available', 'assets/images/rooms/Couple Simple Room/couple01.jpg', 'A cozy room for couples.', 25.5, 2, 'WiFi, TV'),
-(2, '102', 'Deluxe Room', 80.00, 'Booked', 'assets/images/rooms/Deluxe Room/deluxe01.jpg', 'A luxurious deluxe room.', 30.0, 2, 'WiFi, Mini Bar'),
-(3, '103', 'Family Room', 100.00, 'Booked', 'assets/images/rooms/Family Room/family01.jpg', 'Spacious room for families.', 40.0, 4, 'WiFi, TV, Balcony');
+                                                                                                                                (1, '101', 'Couple Simple Room', 60.00, 'Available', 'assets/images/rooms/Couple Simple Room/couple01.jpg', 'A cozy room for couples.', 25.5, 2, 'WiFi, TV'),
+                                                                                                                                (2, '102', 'Deluxe Room', 80.00, 'Booked', 'assets/images/rooms/Deluxe Room/deluxe01.jpg', 'A luxurious deluxe room.', 30.0, 2, 'WiFi, Mini Bar'),
+                                                                                                                                (3, '103', 'Family Room', 100.00, 'Booked', 'assets/images/rooms/Family Room/family01.jpg', 'Spacious room for families.', 40.0, 4, 'WiFi, TV, Balcony');
+ALTER TABLE room
+    ADD COLUMN image_url2 VARCHAR(255) DEFAULT NULL AFTER image_url,
+ADD COLUMN image_url3 VARCHAR(255) DEFAULT NULL AFTER image_url2,
+ADD COLUMN image_url4 VARCHAR(255) DEFAULT NULL AFTER image_url3,
+ADD COLUMN image_url5 VARCHAR(255) DEFAULT NULL AFTER image_url4,
+ADD COLUMN image_url6 VARCHAR(255) DEFAULT NULL AFTER image_url5,
+ADD COLUMN image_url7 VARCHAR(255) DEFAULT NULL AFTER image_url6;
+select * from room;
+UPDATE room SET
+                image_url2 = 'assets/images/rooms/Couple Simple Room/couple02.jpg',
+                image_url3 = 'assets/images/rooms/Couple Simple Room/couple03.jpg',
+                image_url4 = 'assets/images/rooms/Couple Simple Room/couple04.jpg',
+                image_url5 = 'assets/images/rooms/Couple Simple Room/couple05.jpg',
+                image_url6 = 'assets/images/rooms/Couple Simple Room/couple06.jpg',
+                image_url7 = 'assets/images/rooms/Couple Simple Room/couple07.jpg'
+WHERE id = 1;
 
+UPDATE room SET
+                image_url2 = 'assets/images/rooms/Deluxe Room/deluxe02.jpg',
+                image_url3 = 'assets/images/rooms/Deluxe Room/deluxe03.jpg'
+WHERE id = 2;
+
+UPDATE room SET
+                image_url2 = 'assets/images/rooms/Family Room/family02.jpg',
+                image_url3 = 'assets/images/rooms/Family Room/family03.jpg'
+WHERE id = 3;
 --
 -- Indexes for dumped tables
 --
+SELECT * FROM room WHERE id = 1;
 
 --
 -- Indexes for table `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`),
+    ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `booking`
 --
 ALTER TABLE `booking`
-  ADD PRIMARY KEY (`id`),
+    ADD PRIMARY KEY (`id`),
   ADD KEY `customer_id` (`customer_id`),
   ADD KEY `room_id` (`room_id`);
 
@@ -145,14 +171,14 @@ ALTER TABLE `booking`
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`id`),
+    ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `room`
 --
 ALTER TABLE `room`
-  ADD PRIMARY KEY (`id`),
+    ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `number` (`number`);
 
 --
@@ -163,38 +189,38 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-  MODIFY COLUMN area DOUBLE NOT NULL DEFAULT 0.0,
-  MODIFY COLUMN capacity INT NOT NULL DEFAULT 0,
-  MODIFY COLUMN amenities VARCHAR(255) NOT NULL DEFAULT '';
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4,
+    MODIFY COLUMN area DOUBLE NOT NULL DEFAULT 0.0,
+    MODIFY COLUMN capacity INT NOT NULL DEFAULT 0,
+    MODIFY COLUMN amenities VARCHAR(255) NOT NULL DEFAULT '';
 
 --
 -- Constraints for dumped tables
 --
-
+select*from room;
 --
 -- Constraints for table `booking`
 --
 ALTER TABLE `booking`
-  ADD CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE,
+    ADD CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`) ON DELETE CASCADE;
 COMMIT;
 

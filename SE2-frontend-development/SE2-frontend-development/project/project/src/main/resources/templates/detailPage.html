@@ -6,7 +6,7 @@
     <title th:text="${room.roomType} + ' - Mercy Hotel'">Detail - Mercy Hotel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<!--    <link rel="stylesheet" th:href="@{/styles.css}">-->
+    <link rel="stylesheet" th:href="@{/styles.css}">
     <style>
         .container {
             padding: 20px;
@@ -141,7 +141,7 @@
     <div class="row">
 
         <div class="col-md-7">
-            <img src="../static/assets/images/rooms/03.jpg" class="main-room-image" alt="Room Image">
+            <img th:src="@{${room.photoUrl}}" class="main-room-image" alt="Room Image">
 
             <!-- Gallery  -->
             <div class="gallery-wrapper">
@@ -150,22 +150,10 @@
                 </button>
 
                 <div class="gallery-container" id="galleryContainer">
-                    <!-- Thumbnail -->
-                    <img src="../static/assets/images/rooms/03.jpg"
+                    <img th:each="image : ${roomImages}"
+                         th:src="@{${image}}"
                          class="gallery-thumbnail"
-                         onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
-                    <img src="../static/assets/images/rooms/03.jpg"
-                         class="gallery-thumbnail"
-                         onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
-                    <img src="../static/assets/images/rooms/03.jpg"
-                         class="gallery-thumbnail"
-                         onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
-                    <img src="../static/assets/images/rooms/03.jpg"
-                         class="gallery-thumbnail"
-                         onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
-                    <img src="../static/assets/images/rooms/03.jpg"
-                         class="gallery-thumbnail"
-                         onclick="openImageModal('../static/assets/images/rooms/03.jpg')">
+                         >
                 </div>
 
                 <button class="scroll-btn right" onclick="scrollGallery(150)">
@@ -192,41 +180,12 @@
             <div class="amenities-section">
                 <h3 style="color:#484848">Offered Amenities</h3>
 <!--                kitchen-->
-                <div th:if="${room.amenities.contains('kitchen')}" class="amenity-item">
+                <div th:each="amenity : ${amenitiesList}" class="amenity-item">
                     <h3 class="amenity-title">
-                        <i class="fas fa-utensils amenity-icon"></i>
-                        Kitchen
-                    </h3>
-                </div>
-                <div th:if="${room.amenities.contains('washing_machine')}" class="amenity-item">
-                    <h5 class="amenity-title">
-                        <i class="fas fa-tshirt amenity-icon"></i>
-                        Washing Machine
-                    </h5>
-                </div>
-                <!-- Television with Netflix -->
-                <div th:if="${room.amenities.contains('television')}" class="amenity-item">
-                    <h3 class="amenity-title">
-                        <i class="fas fa-tv amenity-icon"></i>
-                        Television with Netflix
+                        <span th:text="${#strings.replace(amenity, '_', ' ')}"></span>
                     </h3>
                 </div>
 
-                <!-- Free Wireless Internet -->
-                <div th:if="${room.amenities.contains('wifi')}" class="amenity-item">
-                    <h4 class="amenity-title">
-                        <i class="fas fa-wifi amenity-icon"></i>
-                        Free Wireless Internet
-                    </h4>
-                </div>
-
-                <!-- Air Conditioner -->
-                <div th:if="${room.amenities.contains('air_conditioner')}" class="amenity-item">
-                    <h5 class="amenity-title">
-                        <i class="fas fa-snowflake amenity-icon"></i>
-                        Air Conditioner
-                    </h5>
-                </div>
             </div>
 
             <div class="mt-4">
@@ -255,10 +214,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function openImageModal(src) {
-        $('#modalImage').attr('src', src);
-        $('#imageModal').modal('show');
-    }
     function scrollGallery(amount) {
         const gallery = document.getElementById('galleryContainer');
         gallery.scrollBy({

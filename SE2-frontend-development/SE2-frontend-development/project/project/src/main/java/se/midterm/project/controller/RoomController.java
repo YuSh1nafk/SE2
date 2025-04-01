@@ -11,6 +11,8 @@ import se.midterm.project.model.Room;
 import se.midterm.project.repository.RoomRepository;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -64,7 +66,15 @@ public class RoomController {
         System.out.println("Fetching room with ID: " + id);
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room Id: " + id));
+        formatPhotoUrls(Collections.singletonList(room));
+
+
+        List<String> amenitiesList = Arrays.asList(room.getAmenities().split(","));
+
+
         model.addAttribute("room", room);
+        model.addAttribute("roomImages", room.getAllImages());
+        model.addAttribute("amenitiesList", amenitiesList);
         return "detailPage";
     }
 
@@ -78,10 +88,21 @@ public class RoomController {
 
 
     private void formatPhotoUrls(List<Room> rooms) {
+        if (rooms == null) return;
         rooms.forEach(room -> {
-            if (!room.getPhotoUrl().startsWith("/")) {
-                room.setPhotoUrl("/" + room.getPhotoUrl());
-            }
+            room.setPhotoUrl(room.getPhotoUrl() != null && !room.getPhotoUrl().startsWith("/")
+                    ? "/" + room.getPhotoUrl()
+                    : room.getPhotoUrl());
+            room.setImageUrl2(formatSimple(room.getImageUrl2()));
+            room.setImageUrl3(formatSimple(room.getImageUrl3()));
+            room.setImageUrl4(formatSimple(room.getImageUrl4()));
+            room.setImageUrl5(formatSimple(room.getImageUrl5()));
+            room.setImageUrl6(formatSimple(room.getImageUrl6()));
+            room.setImageUrl7(formatSimple(room.getImageUrl7()));
         });
+    }
+
+    private String formatSimple(String url) {
+        return url != null && !url.startsWith("/") ? "/" + url : url;
     }
 }

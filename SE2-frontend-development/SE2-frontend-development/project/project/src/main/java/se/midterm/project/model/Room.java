@@ -36,6 +36,23 @@ public class Room {
     @Column(name = "image_url")
     private String photoUrl;
 
+    @Column(name = "image_url2")
+    private String imageUrl2;
+
+    @Column(name = "image_url3")
+    private String imageUrl3;
+    @Column(name = "image_url4")
+    private String imageUrl4;
+
+    @Column(name = "image_url5")
+    private String imageUrl5;
+    @Column(name = "image_url6")
+    private String imageUrl6;
+
+    @Column(name = "image_url7")
+    private String imageUrl7;
+
+
     // Optional: Remove if not needed in the database
     @Column(name = "description")
     private String description;
@@ -55,6 +72,17 @@ public class Room {
     public Room() {
         this.bookings = new ArrayList<>();
     }
+    public List<String> getAllImages() {
+        List<String> images = new ArrayList<>();
+        if (imageUrl2 != null && !imageUrl2.isEmpty()) images.add(imageUrl2);
+        if (imageUrl3 != null && !imageUrl3.isEmpty()) images.add(imageUrl3);
+        if (imageUrl4 != null && !imageUrl4.isEmpty()) images.add(imageUrl4);
+        if (imageUrl5 != null && !imageUrl5.isEmpty()) images.add(imageUrl5);
+        if (imageUrl6 != null && !imageUrl6.isEmpty()) images.add(imageUrl6);
+        if (imageUrl7 != null && !imageUrl7.isEmpty()) images.add(imageUrl7);
+        return images;
+    }
+
 
 }
 
