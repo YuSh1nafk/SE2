@@ -107,7 +107,7 @@ CREATE TABLE `room` (
   `price` decimal(10,2) NOT NULL,
   `status` enum('Available','Booked') DEFAULT 'Available',
   `image_url` varchar(255) DEFAULT NULL,
-  `description` TEXT
+  `description` TEXT,
   `area` double,
   `capacity` int,
   `amenities` varchar(255)
@@ -181,7 +181,7 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4,
   MODIFY COLUMN area DOUBLE NOT NULL DEFAULT 0.0,
   MODIFY COLUMN capacity INT NOT NULL DEFAULT 0,
   MODIFY COLUMN amenities VARCHAR(255) NOT NULL DEFAULT '';
