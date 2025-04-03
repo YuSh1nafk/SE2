@@ -20,7 +20,6 @@ public class DataInitializer {
                 admin.setRole("ADMIN");
                 userRepository.save(admin);
             }
-
             if (userRepository.findByUsername("user").isEmpty()) {
                 User user = new User();
                 user.setUsername("user");

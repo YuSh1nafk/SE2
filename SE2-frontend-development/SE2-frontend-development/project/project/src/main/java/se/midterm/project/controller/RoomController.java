@@ -67,11 +67,7 @@ public class RoomController {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room Id: " + id));
         formatPhotoUrls(Collections.singletonList(room));
-
-
         List<String> amenitiesList = Arrays.asList(room.getAmenities().split(","));
-
-
         model.addAttribute("room", room);
         model.addAttribute("roomImages", room.getAllImages());
         model.addAttribute("amenitiesList", amenitiesList);
