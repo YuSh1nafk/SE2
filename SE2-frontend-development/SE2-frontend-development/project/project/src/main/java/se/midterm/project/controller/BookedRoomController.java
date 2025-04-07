@@ -44,6 +44,7 @@ public class BookedRoomController {
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
             model.addAttribute("bookings", bookings);
+            model.addAttribute("activePage", "mybooking");
             return "customer/mybooking";
         }
     }
