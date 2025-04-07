@@ -12,10 +12,10 @@
             text-align: center;
             color: #583101;
         }
+
         .search-box {
             padding: 20px;
             border-radius: 5px;
-            margin-bottom: 30px;
 
         }
         .btn{
@@ -62,7 +62,7 @@
     <h1 class="title">Booking List</h1>
 
     <!-- Search Box -->
-    <div class="d-flex justify-content-end mb-4">
+    <div class="d-flex justify-content-end">
     <div class="search-box">
                 <div class="input-group" style="width: 400px">
                     <input type="text" class="form-control" placeholder="Room ID or Type" th:value="${searchQuery}">
@@ -145,27 +145,11 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function confirmDelete(confirmationCode) {
-        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        modal.show();
-
-        document.getElementById('confirmDeleteBtn').onclick = function() {
-            fetch('/admin/bookings/' + confirmationCode, {
-                method: 'DELETE'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    }
-                });
-            modal.hide();
-        };
-    }
-    document.querySelector('.btn-primary').addEventListener('click', function() {
-        const searchQuery = document.querySelector('input').value;
-        window.location.href = '/admin/bookings?search=' + encodeURIComponent(searchQuery);
-    });
-</script>
+<!--<script>-->
+<!--    document.querySelector('.btn-primary').addEventListener('click', function() {-->
+<!--        const searchQuery = document.querySelector('input').value;-->
+<!--        window.location.href = '/admin/bookings?search=' + encodeURIComponent(searchQuery);-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

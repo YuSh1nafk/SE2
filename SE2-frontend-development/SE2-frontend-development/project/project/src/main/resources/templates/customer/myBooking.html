@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="#{page.title.booking.details}">My Booking Detail</title>
+  <link rel="stylesheet" th:href="@{/styles.css}">
+  <title>My Booking Detail</title>
   <style>
     body {
         font-family: Arial, sans-serif;
@@ -70,7 +71,7 @@
         color: #000;
     }
     .detail-label {
-        font-weight: none;
+       font-weight: normal;
         width: 140px;
         flex-shrink: 0;
     }
@@ -228,7 +229,7 @@
 
 <!-- Main Content -->
 <main class="my-5">
-  <h1 th:text="#{page.header.booking.details}" style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">My Booking Detail</h1>
+  <h1 th:text="" style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">My Booking Detail</h1>
 
   <div th:each="booking : ${bookings}" class="booking-card">
 
