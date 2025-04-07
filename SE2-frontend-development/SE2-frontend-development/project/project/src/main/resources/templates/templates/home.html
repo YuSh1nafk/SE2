@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:thud="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercy Hotel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<!-- Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/searchbox :: searchbox}"></div>
+
+<!-- Main Content -->
+<main>
+    <div class="container my-5">
+        <div class="about-section">
+            <div class="row">
+                <!-- About Content -->
+                <div class=" col-md-6 col-12 d-flex align-items-center ">
+                    <div class="about-content">
+                        <h2>ABOUT US</h2>
+                        <p class="lead font-weight-bold">Welcome to Mercy Hotel!</p>
+                        <p>
+                            At Mercy Hotel, we are committed to providing you with an exceptional stay. With luxurious and modern amenities, our hotel is the ideal destination for both leisure and business travelers. We take pride in our professional staff, who are always ready to serve and meet all your needs. From comfortable rooms to top-notch facilities, every detail is carefully curated to ensure your utmost satisfaction.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- About Images -->
+                <div class="col-md-6 col-12">
+                    <div class="about-images">
+                        <img th:src="@{/assets/images/rooms/Home/01.jpg}" class="img-fluid img-back" alt="Hotel Image">
+                        <img th:src="@{/assets/images/rooms/Home/02.jpg}" class="img-fluid img-front" alt="Hotel Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box2">
+        <div class="row">
+            <div class="col-12">
+                <h2>OUR CHOICE</h2>
+                <p class="lead font-weight-bold " >The best room just for you!</p>
+            </div>
+        </div>
+
+        <div class="row card-container">
+
+            <div class="col-md-4">
+                <div class="card standard-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Standard Room</h5>
+                        <p class="card-text">$100/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card deluxe-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Deluxe Room</h5>
+                        <p class="card-text">$80/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card simple-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Couple Simple Room</h5>
+                        <p class="card-text">$60/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card superior-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Superior Room</h5>
+                        <p class="card-text">$420/night</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card family-room">
+                    <div class="card-body">
+                        <h5 class="card-title">Family Room</h5>
+                        <p class="card-text">$100/night</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

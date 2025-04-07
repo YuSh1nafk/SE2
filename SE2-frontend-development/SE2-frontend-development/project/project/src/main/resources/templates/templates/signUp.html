@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://i.pinimg.com/736x/1c/d9/d9/1cd9d9260850cf42dae93d286eee2389.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .signup-container {
+            width: 450px;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-title {
+            text-align: center;
+            color: #794b31;
+            margin-bottom: 40px;
+            font-size: 42px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #794b31;
+            background-color: white;
+        }
+
+        .terms-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+
+        .checkbox-group label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 30px;
+        }
+
+        .btn-signup {
+            width: 60%;
+            padding: 15px;
+            background-color: #794b31;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-signup:hover {
+            background-color: #b08d7a;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .login-link a {
+            color: #794b31;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #5a3a25;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="signup-container">
+    <h2 class="signup-title">Sign Up </h2>
+    <form th:action="@{/auth/register}" th:object="${userDto}" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control" id="username" th:field="*{username}"
+                   placeholder="Your username" required>
+            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></small>
+        </div>
+
+        <div class="form-group">
+            <input type="email" class="form-control" id="email" th:field="*{email}"
+                   placeholder="Your email" required>
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></small>
+            <small th:if="${emailError != null}" th:text="${emailError}" class="error-message"></small>
+        </div>
+
+        <div class="form-group">
+            <input type="password" class="form-control" id="password" th:field="*{password}"
+                   placeholder="Your password" required>
+            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></small>
+        </div>
+
+        <div class="terms-container">
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the Terms of Service.</label>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-signup">Create an Account</button>
+        </div>
+
+        <div class="login-link">
+            You already have an Account?  <a class="nav-link" href="/auth/login">Sign In</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,7 +1,5 @@
 package se.midterm.project.config;
 
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import se.midterm.project.service.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,10 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import se.midterm.project.service.JpaUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityCfg {
     private final JpaUserDetailsService jpaUserDetailsService;
 
@@ -20,18 +18,19 @@ public class SecurityCfg {
         this.jpaUserDetailsService = jpaUserDetailsService;
     }
 
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .anonymous(anonymous -> anonymous.disable())
+                .anonymous(anonymous -> anonymous.disable()) // No anonymous access
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/my-bookings").authenticated()
+                        .requestMatchers("/booking").authenticated() // POST /booking requires sign-in
+                        .requestMatchers("/", "/browseRoom", "/rooms/**", "/search", "/auth/**", "/booking**").permitAll()
                         .anyRequest().permitAll()
                 )
-
                 .userDetailsService(jpaUserDetailsService)
                 .formLogin(form -> form
                         .loginPage("/auth/login")
@@ -59,11 +58,8 @@ public class SecurityCfg {
                 .build();
     }
 
-
-
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

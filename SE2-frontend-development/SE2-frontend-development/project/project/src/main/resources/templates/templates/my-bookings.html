@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container my-5">
+    <h1>My Bookings</h1>
+    <div th:if="${bookings == null or bookings.isEmpty()}">
+        <p>No bookings found.</p>
+    </div>
+    <div th:unless="${bookings == null or bookings.isEmpty()}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Confirmation Code</th>
+                <th>Room</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Guests</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.bookingConfirmationCode}"></td>
+                <td th:text="${booking.room.roomType}"></td>
+                <td th:text="${booking.checkInDate}"></td>
+                <td th:text="${booking.checkOutDate}"></td>
+                <td th:text="${booking.numOfAdults + booking.numOfChildren}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

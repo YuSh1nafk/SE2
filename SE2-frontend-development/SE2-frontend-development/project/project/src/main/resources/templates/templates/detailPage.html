@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${room.roomType} + ' - Mercy Hotel'">Detail - Mercy Hotel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <style>
+        .container {
+            padding: 20px;
+        }
+        .row {
+            justify-content: space-between;
+        }
+        .main-room-image{
+            width: 100%;
+            height: 500px;
+        }
+        .list{
+            color: gray;
+        }
+
+        .amenities-section {
+            margin: 1rem 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .amenity-item {
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .amenity-item i {
+            margin-right: 10px;
+            color: #000000;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        .amenity-title {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .amenity-icon {
+            margin-right: 10px;
+            color: #007bff;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+        .gallery-wrapper {
+            position: relative;
+            margin-top: 20px;
+            padding: 0 50px;
+        }
+        .gallery-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 15px;
+
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .gallery-container::-webkit-scrollbar {
+            display: none;
+        }
+        .gallery-thumbnail {
+            width: 160px;
+            height: 100px;
+            flex: 0 0 auto;
+            object-fit: cover;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .gallery-thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1rem;
+        }
+        .scroll-btn.left {
+            left: -15px;
+        }
+        .scroll-btn.right {
+            right: -15px;
+        }
+        .scroll-btn:hover {
+            background: #f8f9fa;
+            color: #583101;
+        }
+        .main-room-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .btn{
+            color: white;
+            background-color: #583101;
+
+        }
+        .btn:hover{
+            background-color: #8C6955;
+            color: white;
+        }
+    </style>
+</head>
+<body class="detail-page">
+<!-- Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Main Content -->
+<main class="container my-5">
+    <div class="row">
+
+        <div class="col-md-7">
+            <img th:src="@{${room.photoUrl}}" class="main-room-image" alt="Room Image">
+
+            <!-- Gallery  -->
+            <div class="gallery-wrapper">
+                <button class="scroll-btn left" onclick="scrollGallery(-150)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <div class="gallery-container" id="galleryContainer">
+                    <img th:each="image : ${roomImages}"
+                         th:src="@{${image}}"
+                         class="gallery-thumbnail"
+                         >
+                </div>
+
+                <button class="scroll-btn right" onclick="scrollGallery(150)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Detail -->
+        <div class="col-md-4">
+            <h1 th:text="${room.roomType}" style="color:#1E0E62">Standard Room</h1>
+            <div class="room-meta mb-4">
+                <ul class="list">
+                    <li class="mb-2"><strong>Room Number:</strong> <span th:text="${room.roomNumber}">101</span></li>
+                    <li class="mb-2"><strong>Area:</strong> <span th:text="${room.roomArea} + ' m²'">30 m²</span></li>
+                    <li class="mb-2"><strong>Capacity:</strong> <span th:text="${room.roomCapacity} + ' people'">2 people</span></li>
+                    <li class="mb-2"><strong>Price:</strong> <span class="font-weight-bold"
+                                                                   th:text="'$' + ${#numbers.formatDecimal(room.roomPrice, 1, 2)} + '/night'">$100/night</span></li>
+                    <li class="mb-2"><strong>Description:</strong> <span th:text="${room.description}">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></li>
+
+                </ul>
+            </div>
+
+            <div class="amenities-section">
+                <h3 style="color:#484848">Offered Amenities</h3>
+<!--                kitchen-->
+                <div th:each="amenity : ${amenitiesList}" class="amenity-item">
+                    <h3 class="amenity-title">
+                        <span th:text="${#strings.replace(amenity, '_', ' ')}"></span>
+                    </h3>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <a th:href="@{/booking(roomId=${room.id})}" class="btn btn-lg ">
+                    Book Now
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal for image preview -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function scrollGallery(amount) {
+        const gallery = document.getElementById('galleryContainer');
+        gallery.scrollBy({
+            left: amount,
+            behavior: 'smooth'
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const gallery = document.getElementById('galleryContainer');
+        const leftBtn = document.querySelector('.scroll-btn.left');
+        const rightBtn = document.querySelector('.scroll-btn.right');
+
+        function checkScroll() {
+            leftBtn.style.display = gallery.scrollLeft <= 10 ? 'none' : 'flex';
+            rightBtn.style.display = gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth - 10 ? 'none' : 'flex';
+        }
+
+        gallery.addEventListener('scroll', checkScroll);
+        checkScroll();
+    });
+</script>
+</body>
+</html>

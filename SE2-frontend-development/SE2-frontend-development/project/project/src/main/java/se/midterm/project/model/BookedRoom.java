@@ -1,18 +1,13 @@
 package se.midterm.project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "booking")
 public class BookedRoom {
     @Id
@@ -26,8 +21,10 @@ public class BookedRoom {
     @Column(name = "checkout")
     private LocalDate checkOutDate;
 
+    @Setter
+    @Getter
     @Column(name = "customer_id")
-    private Integer customerId;
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
@@ -37,12 +34,11 @@ public class BookedRoom {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    // Optional fields (remove or add to database)
     @Column(name = "guest_fullName")
     private String guestFullName;
 
-    @Column(name = "guest_email")
-    private String guestEmail;
+    @Column(name = "guest_phone") // Added for phone
+    private String guestPhone;
 
     @Column(name = "adults")
     private int numOfAdults;
@@ -50,13 +46,10 @@ public class BookedRoom {
     @Column(name = "children")
     private int numOfChildren;
 
-    @Column(name = "total_guest")
-    private int totalNumOfGuest;
-
     @Column(name = "confirmation_Code")
     private String bookingConfirmationCode;
-}
 
-enum BookingStatus {
-    Pending, Confirmed, Cancelled
+    public BookedRoom() {
+        this.status = BookingStatus.Pending;
+    }
 }

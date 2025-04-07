@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Rooms - Mercy Hotel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <style>
+
+    </style>
+</head>
+<body>
+<!-- Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/searchbox :: searchbox}"></div>
+
+<!-- Main Content -->
+<main>
+    <div class="container">
+        <h1 class="my-4">Browse Rooms</h1>
+        <div class="row">
+            <div th:each="room : ${rooms}" class="col-md-3">
+                <div class="room-card">
+                    <img th:src="@{${room.photoUrl}}" th:alt="${room.roomType}" />
+                    <div class="content">
+                        <h3 th:text="${room.roomType}"></h3>
+                        <p th:text="${room.description}"></p>
+                        <div class="price" th:text="'$' + ${room.roomPrice}"></div>
+                        <a th:href="@{/rooms/{id}(id=${room.id})}" class="linking-view-details">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
