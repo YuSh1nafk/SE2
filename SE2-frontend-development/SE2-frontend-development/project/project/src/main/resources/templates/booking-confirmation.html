@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="text-center">Booking Confirmation</h1>
+  <div th:if="${booking}" class="card mt-4">
+    <div class="card-body">
+      <p><strong>Booking ID:</strong> <span th:text="${booking.id}"></span></p>
+      <p><strong>Room Number:</strong> <span th:text="${booking.room.roomNumber}"></span></p>
+      <p><strong>Room Type:</strong> <span th:text="${booking.room.roomType}"></span></p>
+      <p><strong>Name:</strong> <span th:text="${booking.guestFullName}"></span></p>
+      <p><strong>Phone:</strong> <span th:text="${booking.guestPhone}"></span></p>
+      <p><strong>Check-In Date:</strong> <span th:text="${booking.checkInDate}"></span></p>
+      <p><strong>Check-Out Date:</strong> <span th:text="${booking.checkOutDate}"></span></p>
+      <p><strong>Adults:</strong> <span th:text="${booking.numOfAdults}"></span></p>
+      <p><strong>Children:</strong> <span th:text="${booking.numOfChildren}"></span></p>
+      <p><strong>Confirmation Code:</strong> <span th:text="${booking.bookingConfirmationCode}"></span></p>
+      <p><strong>Status:</strong> <span th:text="${booking.status}"></span></p>
+      <div th:if="${booking.cancellable}">
+        <form th:action="@{/bookings/{id}/accept(id=${booking.id})}" method="post" class="d-inline">
+          <button type="submit" class="btn btn-success mr-2">Accept</button>
+        </form>
+        <form th:action="@{/bookings/{id}/decline(id=${booking.id})}" method="post" class="d-inline">
+          <button type="submit" class="btn btn-danger">Decline</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:if="${booking == null}" class="alert alert-warning mt-3">
+    No booking data available. Please try again.
+  </div>
+  <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+  <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+</body>
+</html>
