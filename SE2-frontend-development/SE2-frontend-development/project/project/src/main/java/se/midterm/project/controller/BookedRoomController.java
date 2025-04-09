@@ -48,12 +48,11 @@ public class BookedRoomController {
         if (isAdmin) {
             bookings = bookedRoomService.getAllBookings();
             model.addAttribute("bookings", bookings);
-            // Updated path to match the actual template name (if myBooking.html is the correct name)
             return "admin/myBooking";
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
             model.addAttribute("bookings", bookings);
-            return "customer/mybooking";
+            return "customer/myBooking";
         }
     }
 
@@ -83,24 +82,17 @@ public class BookedRoomController {
 
             Object principal = authentication.getPrincipal();
             if (!(principal instanceof MyUserDetail)) {
-                logger.severe("Principal is not MyUserDetail: " + principal.getClass() + ", value: " + principal);
+                logger.severe("Principal is not MyUserDetail");
                 redirectAttributes.addFlashAttribute("error", "Invalid user authentication");
                 return "redirect:/auth/login";
             }
 
             MyUserDetail userDetail = (MyUserDetail) principal;
             Long userId = userDetail.getUser().getId();
-            if (userId == null) {
-                logger.severe("User ID is null for username: " + userDetail.getUsername());
-                redirectAttributes.addFlashAttribute("error", "User ID is missing");
-                return "redirect:/auth/login";
-            }
 
-            logger.info("Booking attempt: roomId=" + roomId + ", userId=" + userId + ", name=" + guestFullName +
-                    ", phone=" + guestPhone + ", checkIn=" + checkInDateStr + ", checkOut=" + checkOutDateStr);
+            logger.info("Booking attempt: roomId=" + roomId + ", userId=" + userId);
 
             if (roomId == null) {
-                logger.severe("Room ID is null");
                 redirectAttributes.addFlashAttribute("error", "Room ID is missing");
                 return "redirect:/browseRoom";
             }
@@ -108,23 +100,16 @@ public class BookedRoomController {
             LocalDate checkInDate = LocalDate.parse(checkInDateStr);
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
 
-            BookingResponse booking = bookedRoomService.bookRoomPending(roomId, userId, guestFullName, guestPhone,
+            BookingResponse booking = bookedRoomService.bookRoomPending(
+                    roomId, userId, guestFullName, guestPhone,
                     checkInDate, checkOutDate, numOfAdults, numOfChildren);
-            logger.info("Pending booking saved: ID=" + booking.getId());
 
             redirectAttributes.addFlashAttribute("booking", booking);
             return "redirect:/booking-confirmation";
-        } catch (IllegalArgumentException e) {
-            logger.severe("Invalid argument: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/booking?roomId=" + roomId;
-        } catch (IllegalStateException e) {
-            logger.severe("Room unavailable: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "The selected room is no longer available.");
-            return "redirect:/booking?roomId=" + roomId;
+
         } catch (Exception e) {
-            logger.severe("Unexpected error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
+            logger.severe("Booking error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Booking failed: " + e.getMessage());
             return "redirect:/booking?roomId=" + roomId;
         }
     }
@@ -144,9 +129,13 @@ public class BookedRoomController {
     }
 
     @PostMapping("/bookings/{bookingId}/cancel")
-    @ResponseBody
-    public String cancelBooking(@PathVariable Long bookingId) {
-        bookedRoomService.cancelBooking(bookingId);
-        return "Booking cancelled successfully";
+    public String cancelBooking(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+        try {
+            bookedRoomService.cancelBooking(bookingId);
+            redirectAttributes.addFlashAttribute("successMessage", "Booking cancelled successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Cancel failed: " + e.getMessage());
+        }
+        return "redirect:/my-bookings";
     }
 }

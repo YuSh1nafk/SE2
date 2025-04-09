@@ -27,14 +27,16 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
 
     @Override
     public BookingResponse bookRoomPending(Long roomId, Long userId, String guestFullName, String guestPhone,
-                                           LocalDate checkInDate, LocalDate checkOutDate, int numOfAdults, int numOfChildren) {
+                                           LocalDate checkInDate, LocalDate checkOutDate,
+                                           int numOfAdults, int numOfChildren) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + roomId));
 
-        // Check for date conflicts with confirmed bookings
-        List<BookedRoom> conflictingBookings = bookedRoomRepository.findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(
-                roomId, checkOutDate, checkInDate);
-        boolean isBooked = conflictingBookings.stream().anyMatch(booking -> booking.getStatus() == BookingStatus.Confirmed);
+        List<BookedRoom> conflictingBookings = bookedRoomRepository
+                .findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(roomId, checkOutDate, checkInDate);
+
+        boolean isBooked = conflictingBookings.stream()
+                .anyMatch(booking -> booking.getStatus() == BookingStatus.Confirmed);
 
         if (isBooked) {
             throw new IllegalStateException("Room is already booked for these dates");
@@ -42,7 +44,7 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
 
         BookedRoom booking = new BookedRoom();
         booking.setRoom(room);
-        booking.setUserId(userId); // Updated: Using the correct setter method
+        booking.setUserId(userId);
         booking.setGuestFullName(guestFullName);
         booking.setGuestPhone(guestPhone);
         booking.setCheckInDate(checkInDate);
@@ -53,7 +55,6 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         booking.setStatus(BookingStatus.Pending);
 
         BookedRoom savedBooking = bookedRoomRepository.save(booking);
-
         return mapToBookingResponse(savedBooking);
     }
 
@@ -61,9 +62,11 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
     public void acceptBooking(Long bookingId) {
         BookedRoom booking = bookedRoomRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
         if (booking.getStatus() != BookingStatus.Pending) {
             throw new IllegalStateException("Only pending bookings can be accepted");
         }
+
         booking.setStatus(BookingStatus.Confirmed);
         Room room = booking.getRoom();
         room.setAvailable(false);
@@ -75,11 +78,25 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
     public void declineBooking(Long bookingId) {
         BookedRoom booking = bookedRoomRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
         if (booking.getStatus() != BookingStatus.Pending) {
             throw new IllegalStateException("Only pending bookings can be declined");
         }
+
         booking.setStatus(BookingStatus.Cancelled);
         bookedRoomRepository.save(booking);
+    }
+
+    @Override
+    public void cancelBooking(Long bookingId) {
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+        bookedRoomRepository.delete(booking);
+    }
+
+    @Override
+    public void deleteBooking(Long bookingId) {
+        cancelBooking(bookingId); // reuse luôn
     }
 
     @Override
@@ -91,20 +108,6 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         return bookings.stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void cancelBooking(Long bookingId) {
-        BookedRoom booking = bookedRoomRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
-        if (booking.getStatus() == BookingStatus.Confirmed) {
-            // If confirmed, make the room available again
-            Room room = booking.getRoom();
-            room.setAvailable(true);
-            roomRepository.save(room);
-        }
-        booking.setStatus(BookingStatus.Cancelled);
-        bookedRoomRepository.save(booking);
     }
 
     @Override
@@ -120,12 +123,32 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
 
     private BookingResponse mapToBookingResponse(BookedRoom booking) {
         Room room = booking.getRoom();
-        RoomResponse roomResponse = new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(),
-                !room.isAvailable(), room.getPhotoUrl(), room.getRoomNumber(), room.getRoomArea(),
-                room.getRoomCapacity(), room.getDescription(), room.getAmenities(), room.getAllImages());
-        return new BookingResponse(booking.getBookingId(), booking.getCheckInDate(), booking.getCheckOutDate(),
-                booking.getGuestFullName(), booking.getGuestPhone(), booking.getNumOfAdults(),
-                booking.getNumOfChildren(), booking.getBookingConfirmationCode(), roomResponse,
-                booking.getStatus().name(), booking.getStatus() == BookingStatus.Pending);
+        RoomResponse roomResponse = new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getRoomPrice(),
+                !room.isAvailable(),
+                room.getPhotoUrl(),
+                room.getRoomNumber(),
+                room.getRoomArea(),
+                room.getRoomCapacity(),
+                room.getDescription(),
+                room.getAmenities(),
+                room.getAllImages()
+        );
+
+        return new BookingResponse(
+                booking.getBookingId(),
+                booking.getCheckInDate(),
+                booking.getCheckOutDate(),
+                booking.getGuestFullName(),
+                booking.getGuestPhone(),
+                booking.getNumOfAdults(),
+                booking.getNumOfChildren(),
+                booking.getBookingConfirmationCode(),
+                roomResponse,
+                booking.getStatus().name(),
+                true
+        );
     }
 }
