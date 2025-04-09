@@ -26,18 +26,23 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
     private RoomRepository roomRepository;
 
     @Override
-    public BookingResponse bookRoom(Long roomId, Long userId, String guestFullName, String guestPhone,
-                                    LocalDate checkInDate, LocalDate checkOutDate, int numOfAdults, int numOfChildren) {
+    public BookingResponse bookRoomPending(Long roomId, Long userId, String guestFullName, String guestPhone,
+                                           LocalDate checkInDate, LocalDate checkOutDate, int numOfAdults, int numOfChildren) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + roomId));
 
-        if (!room.isAvailable()) {
-            throw new IllegalStateException("Room is already booked");
+        // Check for date conflicts with confirmed bookings
+        List<BookedRoom> conflictingBookings = bookedRoomRepository.findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(
+                roomId, checkOutDate, checkInDate);
+        boolean isBooked = conflictingBookings.stream().anyMatch(booking -> booking.getStatus() == BookingStatus.Confirmed);
+
+        if (isBooked) {
+            throw new IllegalStateException("Room is already booked for these dates");
         }
 
         BookedRoom booking = new BookedRoom();
         booking.setRoom(room);
-        booking.setUserId(userId); // Thay vì String thì Long đẻ kh loi
+        booking.setUserId(userId); // Updated: Using the correct setter method
         booking.setGuestFullName(guestFullName);
         booking.setGuestPhone(guestPhone);
         booking.setCheckInDate(checkInDate);
@@ -47,44 +52,39 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         booking.setBookingConfirmationCode(UUID.randomUUID().toString());
         booking.setStatus(BookingStatus.Pending);
 
-        bookedRoomRepository.save(booking);
+        BookedRoom savedBooking = bookedRoomRepository.save(booking);
 
-        room.setAvailable(false);
-        roomRepository.save(room);
-
-        RoomResponse roomResponse = new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(),
-                !room.isAvailable(), room.getPhotoUrl(), room.getRoomNumber(), room.getRoomArea(),
-                room.getRoomCapacity(), room.getDescription(), room.getAmenities(), room.getAllImages());
-        return new BookingResponse(booking.getBookingId(), checkInDate, checkOutDate, guestFullName, guestPhone,
-                numOfAdults, numOfChildren, booking.getBookingConfirmationCode(), roomResponse,
-                booking.getStatus().name(), booking.getStatus() == BookingStatus.Pending);
+        return mapToBookingResponse(savedBooking);
     }
 
     @Override
-    public List<BookingResponse> getPendingBookings() {
-        List<BookedRoom> pendingBookings = bookedRoomRepository.findByStatus(BookingStatus.Pending);
-        if (pendingBookings == null || pendingBookings.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return pendingBookings.stream()
-                .map(this::mapToBookingResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void confirmBooking(Long bookingId) {
+    public void acceptBooking(Long bookingId) {
         BookedRoom booking = bookedRoomRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
         if (booking.getStatus() != BookingStatus.Pending) {
-            throw new IllegalStateException("Only pending bookings can be confirmed");
+            throw new IllegalStateException("Only pending bookings can be accepted");
         }
         booking.setStatus(BookingStatus.Confirmed);
+        Room room = booking.getRoom();
+        room.setAvailable(false);
+        bookedRoomRepository.save(booking);
+        roomRepository.save(room);
+    }
+
+    @Override
+    public void declineBooking(Long bookingId) {
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+        if (booking.getStatus() != BookingStatus.Pending) {
+            throw new IllegalStateException("Only pending bookings can be declined");
+        }
+        booking.setStatus(BookingStatus.Cancelled);
         bookedRoomRepository.save(booking);
     }
 
     @Override
     public List<BookingResponse> getBookingsByUserId(Long userId) {
-        List<BookedRoom> bookings = bookedRoomRepository.findByUserId(userId); // Now expects Long
+        List<BookedRoom> bookings = bookedRoomRepository.findByUserId(userId);
         if (bookings == null || bookings.isEmpty()) {
             return Collections.emptyList();
         }
@@ -97,14 +97,14 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
     public void cancelBooking(Long bookingId) {
         BookedRoom booking = bookedRoomRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
-        if (booking.getStatus() != BookingStatus.Pending) {
-            throw new IllegalStateException("Only pending bookings can be cancelled");
+        if (booking.getStatus() == BookingStatus.Confirmed) {
+            // If confirmed, make the room available again
+            Room room = booking.getRoom();
+            room.setAvailable(true);
+            roomRepository.save(room);
         }
         booking.setStatus(BookingStatus.Cancelled);
-        Room room = booking.getRoom();
-        room.setAvailable(true);
         bookedRoomRepository.save(booking);
-        roomRepository.save(room);
     }
 
     @Override

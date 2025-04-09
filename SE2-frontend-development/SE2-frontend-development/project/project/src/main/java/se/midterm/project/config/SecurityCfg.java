@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import se.midterm.project.service.JpaUserDetailsService;
+import se.midterm.project.service.JpaUserDetailsService; // Ensure this is used
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +31,7 @@ public class SecurityCfg {
                         .requestMatchers("/", "/browseRoom", "/rooms/**", "/search", "/auth/**", "/booking**").permitAll()
                         .anyRequest().permitAll()
                 )
-                .userDetailsService(jpaUserDetailsService)
+                .userDetailsService(jpaUserDetailsService) // Explicitly use JpaUserDetailsService
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/login")

@@ -1,7 +1,6 @@
 package se.midterm.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import se.midterm.project.response.BookingResponse;
 import se.midterm.project.service.IBookedRoomService;
-
-import se.midterm.project.model.MyUserDetail; // thêm cái này
+import se.midterm.project.model.MyUserDetail;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +26,18 @@ public class BookedRoomController {
     @GetMapping("/my-bookings")
     public String viewBookedRooms(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        MyUserDetail userDetail = (MyUserDetail) auth.getPrincipal();
+        if (auth == null || !auth.isAuthenticated()) {
+            logger.severe("User not authenticated for /my-bookings");
+            return "redirect:/auth/login";
+        }
+
+        Object principal = auth.getPrincipal();
+        if (!(principal instanceof MyUserDetail)) {
+            logger.severe("Principal is not MyUserDetail: " + principal.getClass() + ", value: " + principal);
+            return "redirect:/auth/login";
+        }
+
+        MyUserDetail userDetail = (MyUserDetail) principal;
         Long userId = userDetail.getUser().getId();
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
@@ -39,14 +48,18 @@ public class BookedRoomController {
         if (isAdmin) {
             bookings = bookedRoomService.getAllBookings();
             model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "mybooking");
-            return "admin/mybooking";
+            // Updated path to match the actual template name (if myBooking.html is the correct name)
+            return "admin/myBooking";
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
             model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "mybooking");
             return "customer/mybooking";
         }
+    }
+
+    @GetMapping("/booking-confirmation")
+    public String showBookingConfirmation(Model model) {
+        return "booking-confirmation";
     }
 
     @PostMapping("/booking")
@@ -58,14 +71,31 @@ public class BookedRoomController {
             @RequestParam("checkOutDate") String checkOutDateStr,
             @RequestParam("adults") int numOfAdults,
             @RequestParam("children") int numOfChildren,
-            Model model,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            MyUserDetail userDetail = (MyUserDetail) auth.getPrincipal();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                logger.severe("User not authenticated");
+                redirectAttributes.addFlashAttribute("error", "Please log in to book a room.");
+                return "redirect:/auth/login";
+            }
+
+            Object principal = authentication.getPrincipal();
+            if (!(principal instanceof MyUserDetail)) {
+                logger.severe("Principal is not MyUserDetail: " + principal.getClass() + ", value: " + principal);
+                redirectAttributes.addFlashAttribute("error", "Invalid user authentication");
+                return "redirect:/auth/login";
+            }
+
+            MyUserDetail userDetail = (MyUserDetail) principal;
             Long userId = userDetail.getUser().getId();
+            if (userId == null) {
+                logger.severe("User ID is null for username: " + userDetail.getUsername());
+                redirectAttributes.addFlashAttribute("error", "User ID is missing");
+                return "redirect:/auth/login";
+            }
+
             logger.info("Booking attempt: roomId=" + roomId + ", userId=" + userId + ", name=" + guestFullName +
                     ", phone=" + guestPhone + ", checkIn=" + checkInDateStr + ", checkOut=" + checkOutDateStr);
 
@@ -78,12 +108,11 @@ public class BookedRoomController {
             LocalDate checkInDate = LocalDate.parse(checkInDateStr);
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
 
-            BookingResponse booking = bookedRoomService.bookRoom(roomId, userId, guestFullName, guestPhone,
+            BookingResponse booking = bookedRoomService.bookRoomPending(roomId, userId, guestFullName, guestPhone,
                     checkInDate, checkOutDate, numOfAdults, numOfChildren);
-            logger.info("Booking saved: ID=" + booking.getId());
+            logger.info("Pending booking saved: ID=" + booking.getId());
 
-            redirectAttributes.addFlashAttribute("successMessage", "Booking successful!");
-            model.addAttribute("booking", booking);
+            redirectAttributes.addFlashAttribute("booking", booking);
             return "redirect:/booking-confirmation";
         } catch (IllegalArgumentException e) {
             logger.severe("Invalid argument: " + e.getMessage());
@@ -92,7 +121,7 @@ public class BookedRoomController {
         } catch (IllegalStateException e) {
             logger.severe("Room unavailable: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "The selected room is no longer available.");
-            return "redirect:/browseRoom";
+            return "redirect:/booking?roomId=" + roomId;
         } catch (Exception e) {
             logger.severe("Unexpected error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
@@ -100,9 +129,18 @@ public class BookedRoomController {
         }
     }
 
-    @GetMapping("/booking-confirmation")
-    public String showBookingConfirmation(Model model) {
-        return "booking-confirmation";
+    @PostMapping("/bookings/{bookingId}/accept")
+    public String acceptBooking(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+        bookedRoomService.acceptBooking(bookingId);
+        redirectAttributes.addFlashAttribute("successMessage", "Booking confirmed!");
+        return "redirect:/my-bookings";
+    }
+
+    @PostMapping("/bookings/{bookingId}/decline")
+    public String declineBooking(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+        bookedRoomService.declineBooking(bookingId);
+        redirectAttributes.addFlashAttribute("successMessage", "Booking declined.");
+        return "redirect:/my-bookings";
     }
 
     @PostMapping("/bookings/{bookingId}/cancel")
@@ -111,27 +149,4 @@ public class BookedRoomController {
         bookedRoomService.cancelBooking(bookingId);
         return "Booking cancelled successfully";
     }
-
-    @GetMapping("/admin/confirmationPage")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String viewPendingBookings(Model model) {
-        List<BookingResponse> pendingBookings = bookedRoomService.getPendingBookings();
-        model.addAttribute("bookings", pendingBookings);
-        return "admin/confirmationPage";
-    }
-
-    @PostMapping("/bookings/{bookingId}/confirm")
-    @ResponseBody
-    public String confirmBooking(@PathVariable Long bookingId) {
-        bookedRoomService.confirmBooking(bookingId);
-        return "Booking confirmed successfully";
-    }
-
-    @PostMapping("/bookings/{bookingId}/decline")
-    @ResponseBody
-    public String declineBooking(@PathVariable Long bookingId) {
-        bookedRoomService.cancelBooking(bookingId);
-        return "Booking declined successfully";
-    }
-
 }
