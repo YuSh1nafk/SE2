@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Room</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <style>
     .room-form-container {
       max-width: 800px;
@@ -13,7 +13,7 @@
       padding: 30px;
       background-color: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
     .form-title {
       color: #583101;
@@ -71,133 +71,215 @@
     .image-upload-container:hover {
       border-color: #583101;
     }
+    .amenities-checkbox {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .amenity-item {
+      flex: 0 0 calc(33.333% - 10px);
+    }
+    .img-thumbnail {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin: 5px;
+    }
   </style>
 </head>
 <body>
+
+
 <div class="container py-5">
   <div class="room-form-container">
-    <h2 class="form-title">Edit Room</h2>
+    <h2 class="form-title">EDIT ROOM</h2>
 
-    <form action="/save" method="POST" enctype="multipart/form-data">
+    <form th:action="@{'/edit/' + ${room.id}}" th:object="${room}" method="post" enctype="multipart/form-data">
       <input type="hidden" name="_method" value="PUT">
-
       <input type="hidden" name="id" th:value="${room.id}">
 
-      <!-- Room Name -->
-      <div class="form-section">
-        <label class="form-label" for="room-name">Room Number</label>
-        <input type="text" class="form-control" id="room-name" name="name" th:value="${room.roomNumber}" placeholder="Enter room name" required>
+      <!-- Basic Information -->
+      <div class="row">
+        <div class="col-md-6 form-section">
+          <label class="form-label">Room Type</label>
+          <select class="form-select" th:field="*{roomType}" required>
+            <option value="Standard Room" th:selected="${room.roomType == 'STANDARD'}">Standard Room</option>
+            <option value="Deluxe Room" th:selected="${room.roomType == 'DELUXE'}">Deluxe Room</option>
+            <option value="Suite" th:selected="${room.roomType == 'SUITE'}">Suite</option>
+            <option value="Family Room" th:selected="${room.roomType == 'FAMILY'}">Family Room</option>
+            <option value="VIP Suite" th:selected="${room.roomType == 'VIP'}">VIP Suite</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 form-section">
+          <label class="form-label">Room Number</label>
+          <input type="text" class="form-control" th:field="*{roomNumber}" required>
+        </div>
       </div>
 
-      <!-- Room Type -->
-      <div class="form-section">
-        <label class="form-label" for="room-type">Room Type</label>
-        <select class="form-select" id="room-type" name="type" required>
-          <option value="Standard Room" th:selected="${room.roomType=='Standard Room'}">Standard Room</option>
-          <option value="Deluxe Room" th:selected="${room.roomType=='Deluxe Room'}">Deluxe Room</option>
-          <option value="Superior Room" th:selected="${room.roomType=='Superior Room'}">Superior Room</option>
-          <option value="Family Room" th:selected="${room.roomType=='Family Room'}">Family Room</option>
-          <option value="Couple Simple Room" th:selected="${room.roomType=='Couple Simple Room'}">Couple Simple Room</option>
-        </select>
+      <!-- Pricing -->
+      <div class="row">
+        <div class="col-md-6 form-section">
+          <label class="form-label">Price per night ($)</label>
+          <input type="number" class="form-control" th:field="*{roomPrice}" min="0" step="1" required>
+        </div>
+
+        <div class="col-md-6 form-section">
+          <label class="form-label">Area (m²)</label>
+          <input type="number" class="form-control" th:field="*{roomArea}" min="0" step="1" required>
+        </div>
       </div>
 
-      <!-- Number of Beds -->
-      <div class="form-section">
-        <label class="form-label" for="beds">Area</label>
-        <input type="number" class="form-control" id="beds" name="beds" th:value="${room.roomArea}" min="1" required>
+      <!-- Capacity -->
+      <div class="row">
+        <div class="col-md-6 form-section">
+          <label class="form-label">Capacity</label>
+          <input type="number" class="form-control" th:field="*{roomCapacity}" min="1" required>
+        </div>
       </div>
 
-      <!-- Number of Guests -->
+      <!-- Main Image -->
       <div class="form-section">
-        <label class="form-label" for="guests">Number of Guests</label>
-        <input type="number" class="form-control" id="guests" name="guests" th:value="${room.roomCapacity}" min="1" required>
+        <label class="form-label">Upload Main Photo</label>
+        <input type="file" id="mainPhoto" name="mainPhoto" accept="image/*" class="form-control" required>
+        <div id="main-photo-preview" class="mt-2">
+          <img th:if="${room.photoUrl}" th:src="@{${room.photoUrl}}" class="img-thumbnail">
+        </div>
       </div>
 
-      <!-- Room Price -->
+      <!-- Image Upload (Alternative to URLs) -->
       <div class="form-section">
-        <label class="form-label" for="price">Price per Night ($)</label>
-        <input type="number" class="form-control" id="price" name="price" th:value="${room.roomPrice}" min="0" step="0.01" required>
+        <label class="form-label">Upload New Images (Optional)</label>
+        <div class="image-upload-container" onclick="document.getElementById('roomImages').click()">
+          <i class="bi bi-cloud-arrow-up" style="font-size: 2rem; color: #583101;"></i>
+          <p class="mt-2">Click to upload images or drag and drop</p>
+          <input type="file" id="roomImages" name="roomImages" multiple accept="image/*" style="display: none;">
+        </div>
+        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+
+        <!-- Existing Images -->
+        <div th:if="${roomImages}" class="mt-3">
+          <label class="form-label">Current Images</label>
+          <div class="d-flex flex-wrap gap-2">
+            <img th:each="image : ${roomImages}"
+                 th:src="@{${image}}"
+                 class="img-thumbnail">
+          </div>
+        </div>
       </div>
 
-      <!-- Room Description -->
-      <div class="form-section">
-        <label class="form-label" for="description">Room Description</label>
-        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter a brief description of the room" required th:text="${room.description}"></textarea>
-      </div>
-
-      <!-- Room Amenities -->
+      <!-- Amenities -->
       <div class="form-section">
         <label class="form-label">Amenities</label>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="wifi" name="amenities[]" value="wifi" th:checked="${room.amenities.contains('wifi')}">
-          <label class="form-check-label" for="wifi">Wi-Fi</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="air-conditioner" name="amenities[]" value="air-conditioner" th:checked="${room.amenities.contains('air-conditioner')}">
-          <label class="form-check-label" for="air-conditioner">Air Conditioner</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="tv" name="amenities[]" value="tv" th:checked="${room.amenities.contains('tv')}">
-          <label class="form-check-label" for="tv">TV</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="mini-bar" name="amenities[]" value="mini-bar" th:checked="${room.amenities.contains('mini-bar')}">
-          <label class="form-check-label" for="mini-bar">Mini Bar</label>
+        <input type="text" class="form-control" th:field="*{amenities}"
+               placeholder="Enter amenities separated by commas (e.g., WiFi,TV,AC)">
+        <small class="text-muted">Or select from common amenities below</small>
+
+        <div class="amenities-checkbox mt-2">
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="wifi" value="WiFi" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'WiFi')}">
+            <label class="form-check-label" for="wifi">WiFi</label>
+          </div>
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="tv" value="TV" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'TV')}">
+            <label class="form-check-label" for="tv">TV</label>
+          </div>
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="ac" value="Air Conditioning" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'AC')}">
+            <label class="form-check-label" for="ac">Air Conditioning</label>
+          </div>
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="minibar" value="Minibar" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'Minibar')}">
+            <label class="form-check-label" for="minibar">Minibar</label>
+          </div>
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="view" value="View" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'View')}">
+            <label class="form-check-label" for="view">View</label>
+          </div>
+          <div class="amenity-item form-check">
+            <input class="form-check-input" type="checkbox" id="hairdryer" value="Hairdryer" onclick="updateAmenities(this)"
+                   th:checked="${#strings.contains(room.amenities, 'Hairdryer')}">
+            <label class="form-check-label" for="hairdryer">Hairdryer</label>
+          </div>
         </div>
       </div>
 
-      <!-- Room Main Image -->
+      <!-- Description -->
       <div class="form-section">
-        <label class="form-label" for="main-image">Main Image</label>
-        <input type="file" class="form-control" id="main-image" name="mainImage" accept="image/*">
-        <img th:src="@{${room.photoUrl}}" class="img-fluid mt-3" alt="Room Main Image" />
+        <label class="form-label">Description</label>
+        <textarea class="form-control" th:field="*{description}" rows="4" required></textarea>
       </div>
 
-      <!-- Room Additional Images -->
-      <div class="form-section">
-        <label class="form-label">Additional Room Images</label>
-        <div class="image-upload-container" onclick="document.getElementById('room-images').click()">
-          <i class="bi bi-cloud-arrow-up" style="font-size: 2rem; color: #583101;"></i>
-          <p class="mt-2">Click to upload additional images or drag and drop</p>
-          <input type="file" id="room-images" name="roomImages" multiple accept="image/*" style="display: none;">
-        </div>
-        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2">
-          <img th:each="image : ${roomImages}"
-               th:src="@{${image}}" class="img-thumbnail m-2" style="width: 100px;" />
-        </div>
-      </div>
-
-      <!-- Submit Buttons -->
-      <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-custom">Save Changes</button>
-        <a href="/admin/rooms" class="btn btn-outline-custom">Cancel</a>
+      <!-- Buttons -->
+      <div class="d-flex justify-content-between mt-4">
+        <a th:href="@{/manageRoom}" class="btn btn-outline-custom">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-custom">
+          Save Changes
+        </button>
       </div>
     </form>
-
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Preview selected images
-  document.getElementById('room-images').addEventListener('change', function() {
+  // Image preview functionality
+  document.getElementById('roomImages').addEventListener('change', function(e) {
     const previewContainer = document.getElementById('image-preview');
     previewContainer.innerHTML = '';
-    const files = this.files;
 
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.classList.add('img-thumbnail', 'm-2');
-        img.style.width = '100px';
-        previewContainer.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
+    if (this.files) {
+      Array.from(this.files).forEach(file => {
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.classList.add('img-thumbnail');
+          previewContainer.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+      });
+    }
+  });
+
+  // Amenities checkbox handler
+  function updateAmenities(checkbox) {
+    const amenitiesField = document.querySelector('[th\\:field="*{amenities}"]');
+    let currentAmenities = amenitiesField.value ? amenitiesField.value.split(',') : [];
+
+    if (checkbox.checked) {
+      if (!currentAmenities.includes(checkbox.value)) {
+        currentAmenities.push(checkbox.value);
+      }
+    } else {
+      currentAmenities = currentAmenities.filter(a => a !== checkbox.value);
+    }
+
+    amenitiesField.value = currentAmenities.filter(a => a.trim() !== '').join(',');
+  }
+
+  // Initialize amenities checkboxes based on current value
+  document.addEventListener('DOMContentLoaded', function() {
+    const amenitiesField = document.querySelector('[th\\:field="*{amenities}"]');
+    if (amenitiesField && amenitiesField.value) {
+      const currentAmenities = amenitiesField.value.split(',');
+      currentAmenities.forEach(amenity => {
+        const checkbox = document.querySelector(`input[value="${amenity.trim()}"]`);
+        if (checkbox) {
+          checkbox.checked = true;
+        }
+      });
+    }
   });
 </script>
-
 </body>
 </html>

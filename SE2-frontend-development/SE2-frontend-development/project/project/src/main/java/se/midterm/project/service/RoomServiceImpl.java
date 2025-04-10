@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import se.midterm.project.model.Room;
 import se.midterm.project.repository.RoomRepository;
 import se.midterm.project.response.RoomResponse;
+import se.midterm.project.service.IRoomService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,9 +20,27 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     public List<RoomResponse> getAllRooms() {
         return roomRepository.findAll().stream()
-                .map(this::mapToRoomResponse)
+                .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public RoomResponse getRoomById(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+        return convertToResponse(room);
+    }
+
+    @Override
+    public Room save(Room room) {
+        return roomRepository.save(room);
+    }
+
+    @Override
+    public void deleteRoom(Long id) {
+        roomRepository.deleteById(id);
+    }
+
 
     @Override
     public List<RoomResponse> getAvailableRoomsByTypeAndDate(String roomType, LocalDate checkInDate, LocalDate checkOutDate) {
@@ -29,22 +48,29 @@ public class RoomServiceImpl implements IRoomService {
                 .map(this::mapToRoomResponse)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public RoomResponse getRoomById(Long id) {
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + id));
-        return mapToRoomResponse(room);
+    private RoomResponse convertToResponse(Room room) {
+        RoomResponse response = new RoomResponse();
+        response.setId(room.getId());
+        response.setRoomNumber(room.getRoomNumber());
+        response.setRoomType(room.getRoomType());
+        response.setRoomPrice(room.getRoomPrice());
+        response.setDescription(room.getDescription());
+        response.setAmenities(room.getAmenities());
+        response.setRoomCapacity(room.getRoomCapacity());
+        response.setPhotoUrl(room.getPhotoUrl());
+        // Set other fields as needed
+        return response;
     }
-
-    @Override
-    public Room addRoom(Room room) {
-        return roomRepository.save(room);
-    }
-    @Override
-    public Room save(Room room) {
-        return roomRepository.save(room);  // Save the room to the database
-    }
+//    @Override
+//    public RoomResponse getRoomById(Long id) {
+//        Room room = roomRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + id));
+//        return mapToRoomResponse(room);
+//    }
+//    @Override
+//    public Room save(Room room) {
+//        return roomRepository.save(room);  // Save the room to the database
+//    }
     private RoomResponse mapToRoomResponse(Room room) {
         return new RoomResponse(
                 room.getId(), room.getRoomType(), room.getRoomPrice(), !room.isAvailable(), room.getPhotoUrl(),

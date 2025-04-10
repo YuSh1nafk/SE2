@@ -28,7 +28,7 @@ public class SecurityCfg {
                         .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/my-bookings").authenticated()
-                        .requestMatchers("/booking").authenticated() // POST /booking requires sign-in
+                        .requestMatchers("/booking","/addRoom","/manageRoom","/edit/**").authenticated() // POST /booking requires sign-in
                         .requestMatchers("/", "/browseRoom", "/rooms/**", "/search", "/auth/**", "/booking**").permitAll()
                         .anyRequest().permitAll()
                 )
