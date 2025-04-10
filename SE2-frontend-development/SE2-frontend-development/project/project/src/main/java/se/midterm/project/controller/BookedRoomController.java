@@ -48,10 +48,12 @@ public class BookedRoomController {
         if (isAdmin) {
             bookings = bookedRoomService.getAllBookings();
             model.addAttribute("bookings", bookings);
+            model.addAttribute("activePage", "myBooking");
             return "admin/myBooking";
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
             model.addAttribute("bookings", bookings);
+            model.addAttribute("activePage", "myBooking");
             return "customer/myBooking";
         }
     }

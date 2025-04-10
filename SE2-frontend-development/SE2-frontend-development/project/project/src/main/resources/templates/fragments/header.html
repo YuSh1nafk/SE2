@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/manage-rooms" th:if="${isAdmin}">Manage Rooms</a>
                 </li>
-                <li class="nav-item">
+                <li th:class="${activePage == 'myBooking'} ? 'nav-item active' : 'nav-item'">
                     <a class="nav-link" href="/my-bookings">My Bookings</a>
                 </li>
             </ul>
@@ -40,7 +40,7 @@
                 </li>
                 <li class="nav-item" th:if="${isLoggedIn}">
                     <form th:action="@{/logout}" method="post">
-                        <button class="btn btn-link nav-link no-border" type="submit">Logout</button>
+                        <button class="btn btn-link nav-link " type="submit">Logout</button>
                     </form>
                 </li>
 

@@ -26,6 +26,10 @@ body {
 .navbar {
     position: relative;
     z-index: 1001;
+    padding: 8px 16px;
+}
+.collapse{
+    justify-content: space-between;
 }
 
 .navbar-brand {
