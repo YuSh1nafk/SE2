@@ -35,8 +35,9 @@
                 <li class="nav-item" th:unless="${isLoggedIn}">
                     <a class="nav-link" href="/auth/register">Register</a>
                 </li>
+<!--                them cai nay vao de map page cho de-->
                 <li class="nav-item" th:if="${isLoggedIn}">
-                    <a class="nav-link" href="/profile"  th:text="${username}"></a>
+                    <a class="nav-link" th:href="${isAdmin ? '/admin/profile' : '/customer/profile'}" th:text="${username}"></a>
                 </li>
                 <li class="nav-item" th:if="${isLoggedIn}">
                     <form th:action="@{/logout}" method="post">
