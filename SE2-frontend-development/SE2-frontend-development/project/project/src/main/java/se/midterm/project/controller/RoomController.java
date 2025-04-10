@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import se.midterm.project.model.Room;
 import se.midterm.project.response.RoomResponse;
 import se.midterm.project.service.IRoomService;
 
@@ -42,6 +43,24 @@ public class RoomController {
         model.addAttribute("rooms", rooms);
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
+    }
+    @GetMapping("/manageRoom")
+    public String manageRoom(Model model) {
+        List<RoomResponse> rooms = roomService.getAllRooms();
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("activePage", "manageRoom");
+        return "admin/manageRoom";
+    }
+    @GetMapping("/edit/{id}")
+    public String editRoom1( @PathVariable(value = "id") Long id, Model model) {
+        RoomResponse room =roomService.getRoomById(id);
+        model.addAttribute("room", room);
+        return "admin/editRoom";
+    }
+    @PostMapping("/save")
+    public String saveRoom(@ModelAttribute("room") Room room) {
+        roomService.save(room);
+        return "redirect:/manageRoom";
     }
 
     @PostMapping("/search")

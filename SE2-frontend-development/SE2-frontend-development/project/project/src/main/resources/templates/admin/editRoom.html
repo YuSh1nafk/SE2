@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Room</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
   <style>
     .room-form-container {
       max-width: 800px;
@@ -13,7 +13,7 @@
       padding: 30px;
       background-color: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
     .form-title {
       color: #583101;
@@ -71,210 +71,133 @@
     .image-upload-container:hover {
       border-color: #583101;
     }
-    .amenities-checkbox {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    .amenity-item {
-      flex: 0 0 calc(33.333% - 10px);
-    }
-    .existing-images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .existing-image {
-      position: relative;
-      width: 100px;
-      height: 100px;
-    }
-    .existing-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 5px;
-    }
-    .delete-image-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: #583101;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
-
 <div class="container py-5">
   <div class="room-form-container">
-    <h2 class="form-title">EDIT ROOM</h2>
+    <h2 class="form-title">Edit Room</h2>
 
-    <form th:action="@{/admin/rooms/update/{id}(id=${room.id})}" method="post" enctype="multipart/form-data">
+    <form action="/save" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="_method" value="PUT">
 
-      <!-- Basic Information -->
-      <div class="row">
-        <div class="col-md-6 form-section">
-          <label class="form-label">Room Type</label>
-          <select class="form-select" name="roomType" required th:value="${room.roomType}">
-            <option value="" disabled>Select room type</option>
-            <option value="STANDARD" th:selected="${room.roomType == 'STANDARD'}">Standard Room</option>
-            <option value="DELUXE" th:selected="${room.roomType == 'DELUXE'}">Deluxe Room</option>
-            <option value="SUITE" th:selected="${room.roomType == 'SUITE'}">Suite</option>
-            <option value="FAMILY" th:selected="${room.roomType == 'FAMILY'}">Family Room</option>
-            <option value="VIP" th:selected="${room.roomType == 'VIP'}">VIP Suite</option>
-          </select>
-        </div>
+      <input type="hidden" name="id" th:value="${room.id}">
 
-        <div class="col-md-6 form-section">
-          <label class="form-label">Room Number</label>
-          <input type="text" class="form-control" name="roomNumber" required th:value="${room.roomNumber}">
-        </div>
-      </div>
-
-      <!-- Pricing -->
-      <div class="row">
-        <div class="col-md-6 form-section">
-          <label class="form-label">Price per night ($)</label>
-          <input type="number" class="form-control" name="price" min="0" required th:value="${room.price}">
-        </div>
-
-        <div class="col-md-6 form-section">
-          <label class="form-label">Area</label>
-          <input type="number" class="form-control" name="area" min="0" required th:value="${room.area}">
-        </div>
-      </div>
-
-      <!-- Capacity -->
-      <div class="row">
-        <div class="col-md-6 form-section">
-          <label class="form-label">Capacity</label>
-          <input type="number" class="form-control" name="capacity" min="1" required th:value="${room.capacity}">
-        </div>
-
-        <div class="col-md-6 form-section">
-          <label class="form-label">Bed Configuration</label>
-          <select class="form-select" name="bedConfig" required th:value="${room.bedConfig}">
-            <option value="1 King" th:selected="${room.bedConfig == '1 King'}">1 King Bed</option>
-            <option value="2 Queen" th:selected="${room.bedConfig == '2 Queen'}">2 Queen Beds</option>
-            <option value="1 Queen" th:selected="${room.bedConfig == '1 Queen'}">1 Queen Bed</option>
-            <option value="2 Twin" th:selected="${room.bedConfig == '2 Twin'}">2 Twin Beds</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Images -->
+      <!-- Room Name -->
       <div class="form-section">
-        <label class="form-label">Room Images</label>
-
-        <!-- Existing Images -->
-        <div class="existing-images" th:if="${room.getAllImages() != null and !room.getAllImages().isEmpty()}">
-          <div class="existing-image" th:each="image, iterStat : ${room.getAllImages()}">
-            <img th:src="@{'/uploads/' + ${image}}" alt="Room image">
-            <button type="button" class="delete-image-btn"
-                    th:onclick="'deleteImage(\'' + ${image} + '\', this)'">
-              ×
-            </button>
-          </div>
-        </div>
-
-        <!-- New Images Upload -->
-        <div class="image-upload-container" onclick="document.getElementById('roomImages').click()">
-          <i class="bi bi-cloud-arrow-up" style="font-size: 2rem; color: #583101;"></i>
-          <p class="mt-2">Click to upload additional images or drag and drop</p>
-          <input type="file" id="roomImages" name="roomImages" multiple accept="image/*" style="display: none;">
-        </div>
-        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+        <label class="form-label" for="room-name">Room Number</label>
+        <input type="text" class="form-control" id="room-name" name="name" th:value="${room.roomNumber}" placeholder="Enter room name" required>
       </div>
 
-      <!-- Amenities -->
+      <!-- Room Type -->
+      <div class="form-section">
+        <label class="form-label" for="room-type">Room Type</label>
+        <select class="form-select" id="room-type" name="type" required>
+          <option value="Standard Room" th:selected="${room.roomType=='Standard Room'}">Standard Room</option>
+          <option value="Deluxe Room" th:selected="${room.roomType=='Deluxe Room'}">Deluxe Room</option>
+          <option value="Superior Room" th:selected="${room.roomType=='Superior Room'}">Superior Room</option>
+          <option value="Family Room" th:selected="${room.roomType=='Family Room'}">Family Room</option>
+          <option value="Couple Simple Room" th:selected="${room.roomType=='Couple Simple Room'}">Couple Simple Room</option>
+        </select>
+      </div>
+
+      <!-- Number of Beds -->
+      <div class="form-section">
+        <label class="form-label" for="beds">Area</label>
+        <input type="number" class="form-control" id="beds" name="beds" th:value="${room.roomArea}" min="1" required>
+      </div>
+
+      <!-- Number of Guests -->
+      <div class="form-section">
+        <label class="form-label" for="guests">Number of Guests</label>
+        <input type="number" class="form-control" id="guests" name="guests" th:value="${room.roomCapacity}" min="1" required>
+      </div>
+
+      <!-- Room Price -->
+      <div class="form-section">
+        <label class="form-label" for="price">Price per Night ($)</label>
+        <input type="number" class="form-control" id="price" name="price" th:value="${room.roomPrice}" min="0" step="0.01" required>
+      </div>
+
+      <!-- Room Description -->
+      <div class="form-section">
+        <label class="form-label" for="description">Room Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter a brief description of the room" required th:text="${room.description}"></textarea>
+      </div>
+
+      <!-- Room Amenities -->
       <div class="form-section">
         <label class="form-label">Amenities</label>
-        <div class="amenities-checkbox">
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="WiFi" id="wifi" th:checked="${#lists.contains(room.amenities, 'WiFi')}">
-            <label class="form-check-label" for="wifi">WiFi</label>
-          </div>
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="TV" id="tv" th:checked="${#lists.contains(room.amenities, 'TV')}">
-            <label class="form-check-label" for="tv">TV</label>
-          </div>
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="AC" id="ac" th:checked="${#lists.contains(room.amenities, 'AC')}">
-            <label class="form-check-label" for="ac">Air Conditioning</label>
-          </div>
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="Minibar" id="minibar" th:checked="${#lists.contains(room.amenities, 'Minibar')}">
-            <label class="form-check-label" for="minibar">Minibar</label>
-          </div>
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="View" id="view" th:checked="${#lists.contains(room.amenities, 'View')}">
-            <label class="form-check-label" for="view">View</label>
-          </div>
-          <div class="amenity-item form-check">
-            <input class="form-check-input" type="checkbox" name="amenities" value="Hairdryer" id="hairdryer" th:checked="${#lists.contains(room.amenities, 'Hairdryer')}">
-            <label class="form-check-label" for="hairdryer">Hairdryer</label>
-          </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="wifi" name="amenities[]" value="wifi" th:checked="${room.amenities.contains('wifi')}">
+          <label class="form-check-label" for="wifi">Wi-Fi</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="air-conditioner" name="amenities[]" value="air-conditioner" th:checked="${room.amenities.contains('air-conditioner')}">
+          <label class="form-check-label" for="air-conditioner">Air Conditioner</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="tv" name="amenities[]" value="tv" th:checked="${room.amenities.contains('tv')}">
+          <label class="form-check-label" for="tv">TV</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="mini-bar" name="amenities[]" value="mini-bar" th:checked="${room.amenities.contains('mini-bar')}">
+          <label class="form-check-label" for="mini-bar">Mini Bar</label>
         </div>
       </div>
 
-      <!-- Description -->
+      <!-- Room Main Image -->
       <div class="form-section">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" name="description" rows="4" required th:text="${room.description}"></textarea>
+        <label class="form-label" for="main-image">Main Image</label>
+        <input type="file" class="form-control" id="main-image" name="mainImage" accept="image/*">
+        <img th:src="@{${room.photoUrl}}" class="img-fluid mt-3" alt="Room Main Image" />
       </div>
 
-      <!-- Buttons -->
-      <div class="d-flex justify-content-between mt-4">
-        <a th:href="@{/admin/rooms}" class="btn btn-outline-custom">
-          Cancel
-        </a>
-        <button type="submit" class="btn btn-custom">
-          Update Room
-        </button>
+      <!-- Room Additional Images -->
+      <div class="form-section">
+        <label class="form-label">Additional Room Images</label>
+        <div class="image-upload-container" onclick="document.getElementById('room-images').click()">
+          <i class="bi bi-cloud-arrow-up" style="font-size: 2rem; color: #583101;"></i>
+          <p class="mt-2">Click to upload additional images or drag and drop</p>
+          <input type="file" id="room-images" name="roomImages" multiple accept="image/*" style="display: none;">
+        </div>
+        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2">
+          <img th:each="image : ${roomImages}"
+               th:src="@{${image}}" class="img-thumbnail m-2" style="width: 100px;" />
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-custom">Save Changes</button>
+        <a href="/admin/rooms" class="btn btn-outline-custom">Cancel</a>
       </div>
     </form>
+
   </div>
 </div>
-<div th:replace="~{fragments/footer :: footer}"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Image preview for new uploads
-  document.getElementById('roomImages').addEventListener('change', function(e) {
+  // Preview selected images
+  document.getElementById('room-images').addEventListener('change', function() {
     const previewContainer = document.getElementById('image-preview');
     previewContainer.innerHTML = '';
+    const files = this.files;
 
-    if (this.files) {
-      Array.from(this.files).forEach(file => {
-        const reader = new FileReader();
-
-        reader.onload = function(event) {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.style.width = '100px';
-          img.style.height = '100px';
-          img.style.objectFit = 'cover';
-          img.style.borderRadius = '5px';
-          img.style.margin = '5px';
-          previewContainer.appendChild(img);
-        }
-
-        reader.readAsDataURL(file);
-      });
-    }
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.classList.add('img-thumbnail', 'm-2');
+        img.style.width = '100px';
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
   });
-
 </script>
+
 </body>
 </html>

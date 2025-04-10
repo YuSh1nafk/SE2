@@ -21,8 +21,8 @@
                 <li th:class="${activePage == 'browseRoom'} ? 'nav-item active' : 'nav-item'">
                     <a class="nav-link" th:href="@{/browseRoom}">Browse Rooms</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/manage-rooms" th:if="${isAdmin}">Manage Rooms</a>
+                <li th:class="${activePage == 'manageRoom'} ? 'nav-item active' : 'nav-item'">
+                    <a class="nav-link" href="/manageRoom" th:if="${isAdmin}">Manage Rooms</a>
                 </li>
                 <li th:class="${activePage == 'myBooking'} ? 'nav-item active' : 'nav-item'">
                     <a class="nav-link" href="/my-bookings">My Bookings</a>

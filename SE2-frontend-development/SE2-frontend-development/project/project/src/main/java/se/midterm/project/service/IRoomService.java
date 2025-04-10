@@ -11,4 +11,5 @@ public interface IRoomService {
     List<RoomResponse> getAvailableRoomsByTypeAndDate(String roomType, LocalDate checkInDate, LocalDate checkOutDate);
     RoomResponse getRoomById(Long id);
     Room addRoom(Room room);
+    Room save(Room room);
 }

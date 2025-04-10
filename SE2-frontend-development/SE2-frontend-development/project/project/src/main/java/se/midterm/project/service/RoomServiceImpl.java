@@ -41,7 +41,10 @@ public class RoomServiceImpl implements IRoomService {
     public Room addRoom(Room room) {
         return roomRepository.save(room);
     }
-
+    @Override
+    public Room save(Room room) {
+        return roomRepository.save(room);  // Save the room to the database
+    }
     private RoomResponse mapToRoomResponse(Room room) {
         return new RoomResponse(
                 room.getId(), room.getRoomType(), room.getRoomPrice(), !room.isAvailable(), room.getPhotoUrl(),
