@@ -20,6 +20,7 @@ public class RoomResponse {
     private String description;
     private String amenities;
     private List<String> roomImages;
+
     private List<BookingResponse> bookings;
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked, String photoUrl,

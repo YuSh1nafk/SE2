@@ -18,6 +18,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("roomType") String roomType,
             @Param("checkInDate") LocalDate checkInDate,
             @Param("checkOutDate") LocalDate checkOutDate);
-
+    List<Room> findByRoomTypeContainingIgnoreCase(String roomType);
     List<Room> findByRoomTypeAndStatus(String roomType, RoomStatus status);
 }

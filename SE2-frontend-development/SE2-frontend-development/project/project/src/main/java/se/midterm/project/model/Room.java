@@ -82,7 +82,29 @@ public class Room {
     public boolean isAvailable() {
         return status == RoomStatus.Available;
     }
+    public void addImage(String imageUrl) {
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            return;
+        }
 
+        if (photoUrl == null) {
+            photoUrl = imageUrl;
+        } else if (imageUrl2 == null) {
+            imageUrl2 = imageUrl;
+        } else if (imageUrl3 == null) {
+            imageUrl3 = imageUrl;
+        } else if (imageUrl4 == null) {
+            imageUrl4 = imageUrl;
+        } else if (imageUrl5 == null) {
+            imageUrl5 = imageUrl;
+        } else if (imageUrl6 == null) {
+            imageUrl6 = imageUrl;
+        } else if (imageUrl7 == null) {
+            imageUrl7 = imageUrl;
+        } else {
+            throw new IllegalStateException("All image slots are full");
+        }
+    }
     public void setAvailable(boolean available) {
         this.status = available ? RoomStatus.Available : RoomStatus.Booked;
     }
