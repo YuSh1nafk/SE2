@@ -22,4 +22,13 @@ public class JpaUserDetailsService implements UserDetailsService {
                 .map(MyUserDetail::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
+    
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
 }

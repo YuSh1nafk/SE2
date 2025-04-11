@@ -70,3 +70,8 @@ INSERT INTO `booking` (`id`, `user_id`, `room_id`, `check_in_date`, `check_out_d
                                                                                                                                                                                                        (2, 4, 3, '2024-03-28', '2024-03-30', 'Pending', 'Duy Vuong', '0987654321', 1, 1, 'DEF456');
 
 COMMIT;
+
+
+ALTER TABLE `users`
+ADD COLUMN `profile_image` LONGBLOB,
+ADD COLUMN `profile_image_content_type` VARCHAR(50);

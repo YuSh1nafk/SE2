@@ -109,9 +109,9 @@
 <div class="profile-container">
     <div class="profile-content">
         <div class="profile-image-container">
-            <img th:src="${user.profileImageUrl ?: '/images/default-profile.png'}"
-                 alt="Profile Image"
-                 class="profile-image">
+            <img th:src="${hasProfileImage} ? @{/profile/image/{id}(id=${user.id})} : '/images/profile/unknownAvatar.png'"
+                 alt="Profile Image" class="profile-image">
+
         </div>
         <div class="profile-details">
             <div class="profile-detail">
