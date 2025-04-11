@@ -22,7 +22,7 @@ public class SecurityCfg {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-//                .csrf(AbstractHttpConfigurer::disable)
+
                 .anonymous(anonymous -> anonymous.disable()) // No anonymous access
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
