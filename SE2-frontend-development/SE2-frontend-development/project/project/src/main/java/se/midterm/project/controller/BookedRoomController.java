@@ -62,7 +62,7 @@ public class BookedRoomController {
             return "customer/myBooking";
         }
     }
-    @GetMapping("/delete/{id}")
+    @GetMapping("admin/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteBookingByAdmin(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

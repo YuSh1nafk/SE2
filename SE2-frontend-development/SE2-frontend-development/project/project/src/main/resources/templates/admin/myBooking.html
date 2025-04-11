@@ -112,7 +112,7 @@
                 <td th:text="${booking.guestFullName}">Emily Johnson</td>
                 <td th:text="${booking.guestPhone}">8562345679</td>
                 <td>
-                    <a th:href="@{delete/{id}(id=${booking.id})}"
+                    <a th:href="@{admin/delete/{id}(id=${booking.id})}"
                        class="delete-btn"
                        onclick="return confirm('Are you sure you want to delete this booking?');">
                         <i class="bi bi-trash-fill"></i> Delete

@@ -1,55 +1,68 @@
+// BookedRoom.java
 package se.midterm.project.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "booking")
 public class BookedRoom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long bookingId;
 
-    @Column(name = "checkin")
-    private LocalDate checkInDate;
-
-    @Column(name = "checkout")
-    private LocalDate checkOutDate;
-
-    @Setter
-    @Getter
-    @Column(name = "customer_id")
-    private Long userId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(name = "status")
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
+
+    private String guestFullName;
+    private String guestPhone;
+
+    private Integer numOfAdults;
+    private Integer numOfChildren;
+
+    private String bookingConfirmationCode;
+
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @Column(name = "guest_fullName")
-    private String guestFullName;
+    // Getters and Setters
+    public Long getBookingId() { return bookingId; }
+    public void setBookingId(Long bookingId) { this.bookingId = bookingId; }
 
-    @Column(name = "guest_phone") // Added for phone
-    private String guestPhone;
+    public Room getRoom() { return room; }
+    public void setRoom(Room room) { this.room = room; }
 
-    @Column(name = "adults")
-    private int numOfAdults;
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    @Column(name = "children")
-    private int numOfChildren;
+    public LocalDate getCheckInDate() { return checkInDate; }
+    public void setCheckInDate(LocalDate checkInDate) { this.checkInDate = checkInDate; }
 
-    @Column(name = "confirmation_Code")
-    private String bookingConfirmationCode;
+    public LocalDate getCheckOutDate() { return checkOutDate; }
+    public void setCheckOutDate(LocalDate checkOutDate) { this.checkOutDate = checkOutDate; }
 
-    public BookedRoom() {
-        this.status = BookingStatus.Pending;
-    }
+    public String getGuestFullName() { return guestFullName; }
+    public void setGuestFullName(String guestFullName) { this.guestFullName = guestFullName; }
+
+    public String getGuestPhone() { return guestPhone; }
+    public void setGuestPhone(String guestPhone) { this.guestPhone = guestPhone; }
+
+    public Integer getNumOfAdults() { return numOfAdults; }
+    public void setNumOfAdults(Integer numOfAdults) { this.numOfAdults = numOfAdults; }
+
+    public Integer getNumOfChildren() { return numOfChildren; }
+    public void setNumOfChildren(Integer numOfChildren) { this.numOfChildren = numOfChildren; }
+
+    public String getBookingConfirmationCode() { return bookingConfirmationCode; }
+    public void setBookingConfirmationCode(String bookingConfirmationCode) { this.bookingConfirmationCode = bookingConfirmationCode; }
+
+    public BookingStatus getStatus() { return status; }
+    public void setStatus(BookingStatus status) { this.status = status; }
 }

@@ -51,12 +51,17 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         booking.setCheckOutDate(checkOutDate);
         booking.setNumOfAdults(numOfAdults);
         booking.setNumOfChildren(numOfChildren);
-        booking.setBookingConfirmationCode(UUID.randomUUID().toString());
         booking.setStatus(BookingStatus.Pending);
 
         BookedRoom savedBooking = bookedRoomRepository.save(booking);
+
+        String confirmationCode = String.format("%05d", savedBooking.getBookingId());
+        savedBooking.setBookingConfirmationCode(confirmationCode);
+        bookedRoomRepository.save(savedBooking);
+
         return mapToBookingResponse(savedBooking);
     }
+
     @Override
     public List<BookedRoom> getPendingBookings() {
         return bookedRoomRepository.findByStatus(BookingStatus.Pending);
@@ -77,7 +82,6 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         bookedRoomRepository.save(booking);
         roomRepository.save(room);
     }
-
 
     @Override
     public void declineBooking(Long bookingId) {
@@ -103,6 +107,7 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
 
         bookedRoomRepository.delete(booking);
     }
+
     @Override
     public int countPendingBookings() {
         return bookedRoomRepository.countByStatus(BookingStatus.Pending);
@@ -136,6 +141,7 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
+
     @Override
     public List<BookingResponse> getConfirmedBookings() {
         return bookedRoomRepository.findByStatus(BookingStatus.Confirmed)
@@ -154,8 +160,6 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
-
-
 
     private BookingResponse mapToBookingResponse(BookedRoom booking) {
         Room room = booking.getRoom();
