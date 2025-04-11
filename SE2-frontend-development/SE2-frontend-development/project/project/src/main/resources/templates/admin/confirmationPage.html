@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{page.title.booking.details}">My Booking Detail</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>Booking Confirmation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,7 +71,6 @@
             color: #000;
         }
         .detail-label {
-            font-weight: none;
             width: 140px;
             flex-shrink: 0;
         }
@@ -221,16 +221,13 @@
 <!-- Header Fragment -->
 <div th:replace="~{fragments/header :: header}"></div>
 
-<!-- Main Content -->
 <main class="my-5">
-    <h1 th:text="#{page.header.booking.details}" style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">Pending Booking List</h1>
+    <h1 style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">Pending Booking List</h1>
 
-    <div th:each="booking : ${bookings}" class="booking-card">
-
-        <!-- Left Column - Image and Payment -->
+    <div th:each="booking : ${pendingBookings}" class="booking-card">
         <div class="booking-image-container">
-            <img th:src="${booking.roomImageUrl}"
-                 th:alt="${'Image of ' + booking.roomType}"
+            <img th:src="${booking.room.photoUrl}"
+                 th:alt="${'Image of ' + booking.room.roomType}"
                  class="booking-image">
             <div class="payment-method">
                 <span class="payment-text">Payment method: </span>
@@ -238,137 +235,66 @@
             </div>
         </div>
 
-        <!-- Right Column - Booking Details as List -->
         <ul class="booking-details">
             <li class="booking-detail" style="color:#1E0E62; font-size: 22px; font-weight: bold">
                 <span class="detail-label">Code:</span>
-                <span class="detail-value" th:text="${booking.confirmationCode}"></span>
+                <span class="detail-value" th:text="${booking.bookingConfirmationCode}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Name:</span>
-                <span class="detail-value" th:text="${booking.guestFullName}" style="font-weight: bold"></span>
+                <span class="detail-label">Name:</span>
+                <span class="detail-value" th:text="${booking.guestFullName}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Phone:</span>
-                <span class="detail-value" th:text="${'(+)' + booking.guestPhoneNumber}"></span>
+                <span class="detail-label">Phone:</span>
+                <span class="detail-value" th:text="${booking.guestPhone}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Check-In Date:</span>
-                <span class="detail-value" th:text="${#temporals.format(booking.checkIn, 'yyyy/MM/dd')}" style="font-weight: bold"></span>
+                <span class="detail-label">Check-In:</span>
+                <span class="detail-value" th:text="${#temporals.format(booking.checkInDate, 'yyyy/MM/dd')}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Check-Out Date:</span>
-                <span class="detail-value" th:text="${#temporals.format(booking.checkOut, 'yyyy/MM/dd')}" style="font-weight: bold"></span>
+                <span class="detail-label">Check-Out:</span>
+                <span class="detail-value" th:text="${#temporals.format(booking.checkOutDate, 'yyyy/MM/dd')}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Room Type:</span>
-                <span class="detail-value" th:text="${booking.roomType}"></span>
+                <span class="detail-label">Room Type:</span>
+                <span class="detail-value" th:text="${booking.room.roomType}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Room Number:</span>
-                <span class="detail-value" th:text="${booking.roomID}" style="color:#1E0E62; font-weight: bold"></span>
+                <span class="detail-label">Room No.:</span>
+                <span class="detail-value" th:text="${booking.room.roomNumber}"></span>
             </li>
             <li class="booking-detail guests">
                 <div class="guest-group">
-                    <span class="detail-label" style="font-size: 16px">Adults:</span>
-                    <span class="detail-value" th:text="${booking.adults}"></span>
+                    <span class="detail-label">Adults:</span>
+                    <span class="detail-value" th:text="${booking.numOfAdults}"></span>
                 </div>
                 <div class="guest-group">
-                    <span class="detail-label" style="font-size: 16px">Children:</span>
-                    <span class="detail-value" th:text="${booking.children}"></span>
+                    <span class="detail-label">Children:</span>
+                    <span class="detail-value" th:text="${booking.numOfChildren}"></span>
                 </div>
             </li>
             <li class="booking-detail">
-                <span class="detail-label" style="font-size: 16px">Price:</span>
-                <span class="detail-value" th:text="${'$' + #numbers.formatDecimal(booking.price, 1, 2)}" style="color:#1E0E62; font-weight: bold"></span>
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" th:text="${booking.status}"></span>
             </li>
         </ul>
 
-        <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="action-btn accept-btn"
-                    th:text="#{button.accept.booking}"
-                    th:attr="aria-label=${#messages.msg('button.accept.booking')}"
-                    th:onclick="'acceptBooking(\'' + ${booking.bookingID} + '\', this)'">
-                Accept
-                <span class="loading">⌛</span>
-            </button>
-            <button class="action-btn decline-btn"
-                    th:text="#{button.decline.booking}"
-                    th:attr="aria-label=${#messages.msg('button.decline.booking')}"
-                    th:onclick="'declineBooking(\'' + ${booking.bookingID} + '\', this)'">
-                Decline
-                <span class="loading">⌛</span>
-            </button>
+            <form th:action="@{'/bookings/' + ${booking.bookingId} + '/accept'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="action-btn accept-btn">Accept</button>
+            </form>
+
+            <form th:action="@{'/bookings/' + ${booking.bookingId} + '/decline'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="action-btn decline-btn">Decline</button>
+            </form>
         </div>
     </div>
 </main>
 
 <!-- Footer Fragment -->
 <div th:replace="~{fragments/footer :: footer}"></div>
-
-<script th:inline="javascript">
-    function acceptBooking(bookingID, button) {
-        if (confirm('Are you sure you want to accept this booking?')) {
-            button.classList.add('is-loading');
-            button.disabled = true;
-
-            fetch('/bookings/' + bookingID + '/accept', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Operation failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Network error occurred');
-            })
-            .finally(() => {
-                button.classList.remove('is-loading');
-                button.disabled = false;
-            });
-        }
-    }
-
-    function declineBooking(bookingID, button) {
-        if (confirm('Are you sure you want to decline this booking?')) {
-            button.classList.add('is-loading');
-            button.disabled = true;
-
-            fetch('/bookings/' + bookingID + '/decline', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Operation failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Network error occurred');
-            })
-            .finally(() => {
-                button.classList.remove('is-loading');
-                button.disabled = false;
-            });
-        }
-    }
-</script>
 </body>
 </html>
