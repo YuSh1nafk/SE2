@@ -1,13 +1,21 @@
 /* ========== BASE STYLES ========== */
+html, body {
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     color: #583101;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
 }
 
 .container {
     padding-bottom: 20px;
-    margin-bottom: 100px;
+    flex: 1;
 }
 
 .row {
@@ -60,6 +68,7 @@ body {
     background-color: #f8f9fa;
     color: #16181b;
 }
+
 /* ========== HERO SECTION ========== */
 .hero-section {
     width: 100%;
@@ -242,14 +251,12 @@ body {
 
 /* ========== FOOTER ========== */
 footer {
-    left: 0;
-    bottom: 0;
-    width: 100%;
     background-color: #E6E6E6;
     color: white;
     padding: 20px 0;
     text-align: center;
     font-family: Arial, sans-serif;
+    margin-top: auto; 
 }
 
 .footer .container {
@@ -279,7 +286,9 @@ footer {
 .footer .element {
     font-size: 1em;
     color: #794b31;
+    margin: 0 10px;
 }
+
 
 /* ========== RESPONSIVE STYLES ========== */
 @media (max-width: 992px) {
