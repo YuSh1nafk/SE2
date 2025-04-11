@@ -1,12 +1,14 @@
 package se.midterm.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import se.midterm.project.model.BookedRoom;
 import se.midterm.project.response.BookingResponse;
 import se.midterm.project.service.IBookedRoomService;
 import se.midterm.project.model.MyUserDetail;
@@ -46,7 +48,10 @@ public class BookedRoomController {
 
         List<BookingResponse> bookings;
         if (isAdmin) {
-            bookings = bookedRoomService.getAllBookings();
+            bookings = bookedRoomService.getConfirmedBookings();
+            int pendingCount = bookedRoomService.countPendingBookings();
+            model.addAttribute("pendingCount", pendingCount);
+
             model.addAttribute("bookings", bookings);
             model.addAttribute("activePage", "myBooking");
             return "admin/myBooking";
@@ -57,11 +62,49 @@ public class BookedRoomController {
             return "customer/myBooking";
         }
     }
-
-    @GetMapping("/booking-confirmation")
-    public String showBookingConfirmation(Model model) {
-        return "booking-confirmation";
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteBookingByAdmin(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            bookedRoomService.deleteBooking(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Booking deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete booking: " + e.getMessage());
+        }
+        return "redirect:/my-bookings";
     }
+
+
+    @PostMapping("/bookings/cancel-all")
+    public String cancelAllBookings(RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/auth/login";
+        }
+
+        Object principal = auth.getPrincipal();
+        if (!(principal instanceof MyUserDetail)) {
+            return "redirect:/auth/login";
+        }
+
+        MyUserDetail userDetail = (MyUserDetail) principal;
+        Long userId = userDetail.getUser().getId();
+
+        bookedRoomService.cancelAllBookingsByUser(userId);
+        redirectAttributes.addFlashAttribute("successMessage", "All bookings cancelled successfully.");
+        return "redirect:/my-bookings";
+    }
+    @GetMapping("/booking-confirmation")
+    public String showPendingBookings(Model model) {
+        List<BookedRoom> pendingBookings = bookedRoomService.getPendingBookings();
+        model.addAttribute("pendingBookings", pendingBookings);
+
+        return "admin/confirmationPage";
+    }
+
+
+
+
 
     @PostMapping("/booking")
     public String bookRoom(
@@ -107,7 +150,7 @@ public class BookedRoomController {
                     checkInDate, checkOutDate, numOfAdults, numOfChildren);
 
             redirectAttributes.addFlashAttribute("booking", booking);
-            return "redirect:/booking-confirmation";
+            return "redirect:/my-bookings";
 
         } catch (Exception e) {
             logger.severe("Booking error: " + e.getMessage());
