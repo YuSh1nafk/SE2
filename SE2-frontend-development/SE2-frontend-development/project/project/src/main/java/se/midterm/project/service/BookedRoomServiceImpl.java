@@ -57,6 +57,10 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         BookedRoom savedBooking = bookedRoomRepository.save(booking);
         return mapToBookingResponse(savedBooking);
     }
+    @Override
+    public List<BookedRoom> getPendingBookings() {
+        return bookedRoomRepository.findByStatus(BookingStatus.Pending);
+    }
 
     @Override
     public void acceptBooking(Long bookingId) {
@@ -73,6 +77,7 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         bookedRoomRepository.save(booking);
         roomRepository.save(room);
     }
+
 
     @Override
     public void declineBooking(Long bookingId) {
@@ -91,12 +96,34 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
     public void cancelBooking(Long bookingId) {
         BookedRoom booking = bookedRoomRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.Pending) {
+            throw new IllegalStateException("Only pending bookings can be cancelled");
+        }
+
         bookedRoomRepository.delete(booking);
+    }
+    @Override
+    public int countPendingBookings() {
+        return bookedRoomRepository.countByStatus(BookingStatus.Pending);
     }
 
     @Override
     public void deleteBooking(Long bookingId) {
-        cancelBooking(bookingId); // reuse luôn
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
+        if (booking.getStatus() == BookingStatus.Confirmed) {
+            bookedRoomRepository.delete(booking);
+        } else {
+            throw new IllegalStateException("Only confirmed bookings can be deleted by admin.");
+        }
+    }
+
+    @Override
+    public void cancelAllBookingsByUser(Long userId) {
+        List<BookedRoom> bookings = bookedRoomRepository.findByUserId(userId);
+        bookedRoomRepository.deleteAll(bookings);
     }
 
     @Override
@@ -106,6 +133,13 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
             return Collections.emptyList();
         }
         return bookings.stream()
+                .map(this::mapToBookingResponse)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<BookingResponse> getConfirmedBookings() {
+        return bookedRoomRepository.findByStatus(BookingStatus.Confirmed)
+                .stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
@@ -120,6 +154,8 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
+
+
 
     private BookingResponse mapToBookingResponse(BookedRoom booking) {
         Room room = booking.getRoom();
@@ -137,6 +173,8 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 room.getAllImages()
         );
 
+        boolean cancellable = booking.getStatus() == BookingStatus.Pending;
+
         return new BookingResponse(
                 booking.getBookingId(),
                 booking.getCheckInDate(),
@@ -148,7 +186,7 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 booking.getBookingConfirmationCode(),
                 roomResponse,
                 booking.getStatus().name(),
-                true
+                cancellable
         );
     }
 }
