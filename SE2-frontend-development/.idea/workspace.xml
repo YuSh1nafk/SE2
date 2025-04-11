@@ -6,13 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="ba6f080b-3883-4c78-a059-89a308feff05" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/hotel_booking.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/hotel_booking.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/JpaUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/JpaUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/adminProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/adminProfile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/editAdminProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/editAdminProfile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/customer/editUserProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/customer/editUserProfile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/customer/userProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/customer/userProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/config/SecurityCfg.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/config/SecurityCfg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/controller/RoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/controller/RoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/model/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/model/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/repository/RoomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/repository/RoomRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/response/RoomResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/response/RoomResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/IRoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/IRoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/RoomServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/java/se/midterm/project/service/RoomServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/addNewRoom.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/addNewRoom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/editRoom.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/editRoom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/manageRoom.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/admin/manageRoom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/fragments/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/SE2-frontend-development/project/project/src/main/resources/templates/fragments/header.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,18 +40,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.ProjectApplication.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/duyvu/Code/SE2/MongoDbOAuth&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.ProjectApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/duyvu/Code/SE2/MongoDbOAuth",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\duyvu\Code\SE2\SE2-frontend-development\SE2-frontend-development\project\project\src\main\resources\templates\fragments" />
