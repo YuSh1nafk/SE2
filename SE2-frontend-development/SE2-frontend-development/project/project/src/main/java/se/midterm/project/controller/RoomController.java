@@ -6,13 +6,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import se.midterm.project.model.Room;
 import se.midterm.project.repository.RoomRepository;
 import se.midterm.project.response.RoomResponse;
 import se.midterm.project.service.IRoomService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,10 +56,33 @@ public class RoomController {
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }
-    @GetMapping("/manageRoom")
-    public String manageRoom(Model model) {
-        List<RoomResponse> rooms = roomService.getAllRooms();
+        @GetMapping("/manageRoom")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String manageRoom(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
+        List<RoomResponse> rooms;
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            if (searchQuery.matches("\\d+")) { // Check if the search query is a number (room ID)
+                try {
+                    Long roomId = Long.parseLong(searchQuery);
+                    RoomResponse room = roomService.getRoomById(roomId);
+                    if (room != null) {
+                        rooms = Collections.singletonList(room); 
+                    } else {
+                        rooms = Collections.emptyList();
+                        model.addAttribute("errorMessage", "Room not found for ID: " + roomId);
+                    }
+                } catch (NumberFormatException e) {
+                    rooms = Collections.emptyList(); 
+                    model.addAttribute("errorMessage", "Invalid room ID format");
+                }
+            } else {
+                rooms = roomService.searchRoomsByType(searchQuery); 
+            }
+        } else {
+            rooms = roomService.getAllRooms();
+        }
         model.addAttribute("rooms", rooms);
+        model.addAttribute("searchQuery", searchQuery); 
         model.addAttribute("activePage", "manageRoom");
         return "admin/manageRoom";
     }
@@ -67,12 +96,34 @@ public class RoomController {
     }
 
     // Add Room - Submit
-    @PostMapping("/addRoom")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String addRoom(@ModelAttribute Room room, RedirectAttributes redirectAttributes) {
-        roomService.save(room);
-        redirectAttributes.addFlashAttribute("success", "Room added successfully");
-        return "redirect:/manageRoom";
+   @PostMapping("/addRoom")
+    public String addRoom(@ModelAttribute Room room,
+                          @RequestParam("mainImage") MultipartFile mainImage,
+                          RedirectAttributes redirectAttributes) {
+        if (!mainImage.isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
+                java.io.File dir = new java.io.File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                String fileName = java.util.UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(mainImage.getOriginalFilename());
+                Path filePath = Paths.get(uploadDir, fileName);
+                Files.copy(mainImage.getInputStream(), filePath);
+                room.setPhotoUrl("/images/" + fileName);
+            } catch (IOException e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Failed to upload image: " + e.getMessage());
+                return "redirect:/addRoom";
+            }
+        }
+        try {
+            roomService.save(room);
+            redirectAttributes.addFlashAttribute("successMessage", "Room added successfully");
+            return "redirect:/manageRoom";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to add room: " + e.getMessage());
+            return "redirect:/addRoom";
+        }
     }
 
     // Edit Room - Form

@@ -4,29 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/styles.css}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            max-width: 1000px;
-            width: 100%;
-        }
+        .main-content {
+                display: flex;
+                justify-content: center;
+                padding: 20px;
+            }
+            .profile-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 30px;
+                padding-top: 40px;
+                padding-bottom: 40px;
+                padding-left: 200px;
+                padding-right: 200px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                background-color: white;
+                width: 100%;
+                margin: 0 auto;
+            }
         .profile-content {
             display: flex;
             align-items: center;
@@ -105,8 +105,10 @@
     </style>
 </head>
 <body>
+<!-- Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
 
-<div class="profile-container">
+<main class="profile-container">
     <div class="profile-content">
         <div class="profile-image-container">
             <img th:src="${hasProfileImage} ? @{/profile/image/{id}(id=${user.id})} : '/images/profile/unknownAvatar.png'"
@@ -116,26 +118,29 @@
         <div class="profile-details">
             <div class="profile-detail">
                 <div class="detail-label">Name</div>
-                <div class="detail-value" th:text="${user.fullName}">Nguyen Tuyet</div>
+                <div class="detail-value" th:text="${user.fullName}"></div>
             </div>
             <div class="profile-detail">
                 <div class="detail-label">Gender</div>
-                <div class="detail-value" th:text="${user.gender}">Female</div>
+                <div class="detail-value" th:text="${user.gender}"></div>
             </div>
             <div class="profile-detail">
                 <div class="detail-label">Date of Birth</div>
-                <div class="detail-value" th:text="${#temporals.format(user.dateOfBirth, 'dd/MM/yyyy')}">30/01/1995</div>
+                <div class="detail-value" th:text="${#temporals.format(user.dateOfBirth, 'dd/MM/yyyy')}"></div>
             </div>
             <div class="profile-detail">
                 <div class="detail-label">Position</div>
-                <div class="detail-value" th:text="${user.position ?: 'Manager'}">Manager</div>
+                <div class="detail-value" th:text="${user.position ?: 'Manager'}"></div>
             </div>
         </div>
     </div>
     <div class="profile-actions">
-        <a th:href="@{/profile/edit}" class="edit-btn">Edit Profile</a>
+        <a th:href="@{/profile/edit}" class="edit-btn">Edit</a>
     </div>
-</div>
+</main>
+
+<!-- Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

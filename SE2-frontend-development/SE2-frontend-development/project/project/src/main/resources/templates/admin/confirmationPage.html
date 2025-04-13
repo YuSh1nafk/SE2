@@ -217,7 +217,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <main class="my-5">
-    <h1 style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">Pending Booking List</h1>
+    <h1 style="text-align: center; font-size: 30px; font-weight: bold; color:#794b31; padding-bottom: 20px">Pending Booking List</h1>
 
     <div th:each="booking : ${pendingBookings}" class="booking-card">
         <div class="booking-image-container">
@@ -256,7 +256,7 @@
                 <span class="detail-value" th:text="${booking.room.roomType}"></span>
             </li>
             <li class="booking-detail">
-                <span class="detail-label">Room No.:</span>
+                <span class="detail-label">Room Number:</span>
                 <span class="detail-value" th:text="${booking.room.roomNumber}"></span>
             </li>
             <li class="booking-detail guests">

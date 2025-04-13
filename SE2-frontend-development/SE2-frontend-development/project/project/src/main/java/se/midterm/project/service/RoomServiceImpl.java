@@ -23,6 +23,21 @@ public class RoomServiceImpl implements IRoomService {
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<RoomResponse> searchRooms(String keyword) {
+        try {
+            Long id = Long.parseLong(keyword);
+            return roomRepository.findById(id)
+                    .map(this::mapToRoomResponse)
+                    .map(List::of)
+                    .orElse(List.of());
+        } catch (NumberFormatException e) {
+            return roomRepository.findByRoomTypeContainingIgnoreCase(keyword)
+                    .stream()
+                    .map(this::mapToRoomResponse)
+                    .collect(Collectors.toList());
+        }
+    }
 
     @Override
     public RoomResponse getRoomById(Long id) {

@@ -144,17 +144,19 @@ public class BookedRoomController {
 
             LocalDate checkInDate = LocalDate.parse(checkInDateStr);
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
-//            bookedRoomService.bookRoomPending(
-//                    roomId, userId, guestFullName, guestPhone,
-//                    checkInDate, checkOutDate, numOfAdults, numOfChildren
-//            );
 
+            bookedRoomService.bookRoomPending(
+                    roomId, userId, guestFullName, guestPhone,
+                    checkInDate, checkOutDate, numOfAdults, numOfChildren
+            );
+            
             BookingResponse booking = bookedRoomService.bookRoomPending(
                     roomId, userId, guestFullName, guestPhone,
                     checkInDate, checkOutDate, numOfAdults, numOfChildren);
 
             redirectAttributes.addFlashAttribute("booking", booking);
             return "redirect:/my-bookings";
+            
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", "This room is full during this time period");
             return "redirect:/booking?roomId=" + roomId;

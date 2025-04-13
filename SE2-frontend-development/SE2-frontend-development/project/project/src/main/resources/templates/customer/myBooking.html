@@ -8,29 +8,39 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <link rel="stylesheet" th:href="@{/styles.css}">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-    }
     .booking-card {
       border: 1px solid #ebe8e8;
-      margin: 40px;
-      padding: 40px;
-      display: flex;
-      gap: 30px;
+      margin: 20px;
+      padding: 20px;
       background-color: white;
       border-radius: 10px;
       box-shadow: 0 10px 20px rgba(121, 75, 49, 0.15), 0 6px 6px rgba(121, 75, 49, 0.1);
       position: relative;
     }
+    @media (min-width: 1200px) {
+      .booking-card {
+        margin: 40px;
+        padding: 40px;
+        display: flex;
+        gap: 30px;
+      }
+    }
     .booking-image-container {
-      flex: 0 0 220px;
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      align-items: center;
+    }
+    @media (min-width: 1200px) {
+      .booking-image-container {
+        flex: 0 0 420px;
+        margin-bottom: 0;
+        align-items: flex-start;
+      }
     }
     .booking-image {
-      width: 420px;
+      width: 100%;
+      max-width: 420px;
       height: 265px;
       border-radius: 10px;
       object-fit: cover;
@@ -39,18 +49,32 @@
       font-style: italic;
       font-size: 18px;
       color: #1E0E62;
-      padding-top: 10px;
+      padding-top: 15px;
       text-align: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 420px;
+    }
+    @media (min-width: 1200px) {
+      .payment-method {
+        text-align: left;
+      }
     }
     .booking-details {
-      flex: 1;
-      padding-left: 50px;
       list-style: none;
       margin: 0;
+      padding: 0;
+    }
+    @media (min-width: 1200px) {
+      .booking-details {
+        flex: 1;
+        padding-left: 50px;
+      }
     }
     .booking-detail {
       margin-bottom: 12px;
       display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
       padding-left: 20px;
       position: relative;
@@ -65,6 +89,12 @@
       width: 140px;
       flex-shrink: 0;
       font-weight: normal;
+    }
+    @media (max-width: 576px) {
+      .detail-label {
+        width: 100%;
+        margin-bottom: 5px;
+      }
     }
     .status-message {
       color: #EC711F;
@@ -87,10 +117,17 @@
       border-radius: 50%;
     }
     .cancel-btn-container {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
+      margin-top: 20px;
+      text-align: center;
+    }
+    @media (min-width: 1200px) {
+      .cancel-btn-container {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-top: 0;
+      }
     }
     .cancel-btn {
       padding: 12px 16px;
@@ -102,6 +139,17 @@
       cursor: pointer;
       min-width: 140px;
       border-radius: 6px;
+      width: 100%;
+    }
+    @media (min-width: 576px) {
+      .cancel-btn {
+        width: auto;
+      }
+    }
+    .cancel-btn:hover {
+      background-color: #b08d7a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(121, 75, 49, 0.2);
     }
     .cancel-btn:disabled {
       background-color: #cccccc;
@@ -112,6 +160,18 @@
       margin-top: 20px;
       text-align: center;
     }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color:#794b31;
+      padding-bottom: 20px;
+    }
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 33px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -120,7 +180,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <main class="my-5">
-  <h1 style="text-align: center; font-size: 33px; color:#794b31; padding-bottom: 20px">My Booking Detail</h1>
+  <h1>My Booking Detail</h1>
 
   <div th:each="booking : ${bookings}" class="booking-card">
 
@@ -137,8 +197,8 @@
     <!-- Right Column -->
     <ul class="booking-details">
       <li class="booking-detail">
-        <span class="detail-label">Code:</span>
-        <span class="detail-value" th:text="${booking.bookingConfirmationCode}"></span>
+        <span class="detail-label" style="font-size: 22px; color: #1E0E62; font-weight: bold">Code:</span>
+        <span class="detail-value" style="font-size: 22px; color: #1E0E62; font-weight: bold" th:text="${booking.bookingConfirmationCode}"></span>
       </li>
       <li class="booking-detail">
         <span class="detail-label">Name:</span>
@@ -184,7 +244,7 @@
       <button class="cancel-btn"
               th:disabled="${!booking.cancellable}"
               th:onclick="'cancelBooking(\'' + ${booking.id} + '\', this)'">
-        Cancel Booking ⏳
+        Cancel Booking
       </button>
     </div>
   </div>
