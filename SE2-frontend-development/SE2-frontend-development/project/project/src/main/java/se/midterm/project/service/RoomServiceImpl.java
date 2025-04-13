@@ -49,6 +49,13 @@ public class RoomServiceImpl implements IRoomService {
                 .map(this::mapToRoomResponse)
                 .collect(Collectors.toList());
     }
+     @Override
+    public List<RoomResponse> searchRoomsByType(String searchQuery) {
+        List<Room> rooms = roomRepository.findByRoomTypeContainingIgnoreCase(searchQuery);
+        return rooms.stream()
+                .map(this::mapToRoomResponse)
+                .collect(Collectors.toList());
+    }
     private RoomResponse convertToResponse(Room room) {
         RoomResponse response = new RoomResponse();
         response.setId(room.getId());
