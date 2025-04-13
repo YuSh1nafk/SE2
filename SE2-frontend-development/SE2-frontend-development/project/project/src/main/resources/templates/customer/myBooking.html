@@ -246,7 +246,9 @@
               th:onclick="'cancelBooking(\'' + ${booking.id} + '\', this)'">
         Cancel Booking
       </button>
+
     </div>
+
   </div>
 
   <div class="info-message" th:if="${#lists.isEmpty(bookings)}">
@@ -257,32 +259,7 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script th:inline="javascript">
-  function cancelBooking(bookingId, button) {
-    if (confirm('Are you sure you want to cancel this booking?')) {
-      button.disabled = true;
-      fetch('/bookings/' + bookingId + '/cancel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''
-        }
-      })
-              .then(response => {
-                if (response.ok) {
-                  window.location.reload();
-                } else {
-                  alert('Cancel failed.');
-                }
-              })
-              .catch(error => {
-                console.error('Error:', error);
-                alert('Network error occurred.');
-              });
-    }
-  }
-</script>
+
 
 </body>
 </html>

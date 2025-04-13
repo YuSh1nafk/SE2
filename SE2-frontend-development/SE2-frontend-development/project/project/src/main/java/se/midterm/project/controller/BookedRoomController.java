@@ -187,4 +187,5 @@ public class BookedRoomController {
         }
         return "redirect:/my-bookings";
     }
+
 }

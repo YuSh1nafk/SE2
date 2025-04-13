@@ -178,7 +178,10 @@
     <div class="edit-content">
         <!-- Left Column - Profile Image with Change Button -->
         <div class="profile-image-edit">
-            <img th:src="${user.profileImageUrl ?: '/images/profile/unknownAvatar.png'}" alt="Profile Image" class="profile-image">
+            <img th:src="@{/profile/image/{id}(id=${user.id})}"
+                 onerror="this.onerror=null;this.src='/images/profile/unknownAvatar.png';"
+                 alt="Profile Image" class="profile-image">
+
             <div class="change-image-container">
                 <button type="button" class="change-image-btn">Change Photo</button>
             </div>
@@ -207,7 +210,7 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="save-btn">Save</button>
-                <a th:href="@{/profile}" class="cancel-btn">Cancel</a>
+                <a th:href="@{/customer/profile}" class="cancel-btn">Cancel</a>
             </div>
         </form>
     </div>
@@ -219,14 +222,16 @@
     });
 
     document.getElementById('profileImage').addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
                 document.querySelector('.profile-image').src = event.target.result;
             }
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(file);
         }
     });
+
 </script>
 
 </body>
