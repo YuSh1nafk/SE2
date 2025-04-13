@@ -141,7 +141,7 @@
       <!-- Main Image -->
       <div class="form-section">
         <label class="form-label">Upload Main Photo</label>
-        <input type="file" id="mainPhoto" name="mainPhoto" accept="image/*" class="form-control" required>
+        <input type="file" id="mainImage" name="mainImage" accept="image/*" class="form-control">
         <div id="main-photo-preview" class="mt-2">
           <img th:if="${room.photoUrl}" th:src="@{${room.photoUrl}}" class="img-thumbnail">
         </div>

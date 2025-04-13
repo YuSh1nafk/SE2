@@ -14,5 +14,7 @@ public interface IRoomService {
     Room save(Room room);
     void deleteRoom(Long id);
     List<RoomResponse> getAvailableRoomsByTypeAndDate(String roomType, LocalDate checkInDate, LocalDate checkOutDate);
+    List<RoomResponse> searchRoomsByType(String searchQuery);
+    Room getRoomEntityById(Long id);
 
 }

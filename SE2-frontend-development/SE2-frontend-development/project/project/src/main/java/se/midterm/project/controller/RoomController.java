@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class RoomController {
@@ -61,7 +62,7 @@ public class RoomController {
     public String manageRoom(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
         List<RoomResponse> rooms;
         if (searchQuery != null && !searchQuery.isEmpty()) {
-            if (searchQuery.matches("\\d+")) { // Check if the search query is a number (room ID)
+            if (searchQuery.matches("\\d+")) {
                 try {
                     Long roomId = Long.parseLong(searchQuery);
                     RoomResponse room = roomService.getRoomById(roomId);
@@ -96,35 +97,59 @@ public class RoomController {
     }
 
     // Add Room - Submit
-   @PostMapping("/addRoom")
+    @PostMapping("/addRoom")
     public String addRoom(@ModelAttribute Room room,
                           @RequestParam("mainImage") MultipartFile mainImage,
+                          @RequestParam(value = "roomImages", required = false) MultipartFile[] roomImages,
                           RedirectAttributes redirectAttributes) {
-        if (!mainImage.isEmpty()) {
-            try {
-                String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
-                java.io.File dir = new java.io.File(uploadDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                String fileName = java.util.UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(mainImage.getOriginalFilename());
+
+        try {
+            String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
+            java.io.File dir = new java.io.File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            if (!mainImage.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(mainImage.getOriginalFilename());
                 Path filePath = Paths.get(uploadDir, fileName);
                 Files.copy(mainImage.getInputStream(), filePath);
                 room.setPhotoUrl("/images/" + fileName);
-            } catch (IOException e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Failed to upload image: " + e.getMessage());
-                return "redirect:/addRoom";
             }
-        }
-        try {
+            if (roomImages != null && roomImages.length > 0) {
+                int index = 2;
+                for (MultipartFile image : roomImages) {
+                    if (!image.isEmpty() && index <= 7) {
+                        String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(image.getOriginalFilename());
+                        Path filePath = Paths.get(uploadDir, fileName);
+                        Files.copy(image.getInputStream(), filePath);
+                        String imageUrl = "/images/" + fileName;
+
+                        switch (index) {
+                            case 2 -> room.setImageUrl2(imageUrl);
+                            case 3 -> room.setImageUrl3(imageUrl);
+                            case 4 -> room.setImageUrl4(imageUrl);
+                            case 5 -> room.setImageUrl5(imageUrl);
+                            case 6 -> room.setImageUrl6(imageUrl);
+                            case 7 -> room.setImageUrl7(imageUrl);
+                        }
+
+                        index++;
+                    }
+                }
+            }
             roomService.save(room);
             redirectAttributes.addFlashAttribute("successMessage", "Room added successfully");
             return "redirect:/manageRoom";
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to upload image(s): " + e.getMessage());
+            return "redirect:/addRoom";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add room: " + e.getMessage());
             return "redirect:/addRoom";
         }
     }
+
 
     // Edit Room - Form
     @GetMapping("/edit/{id}")
@@ -138,13 +163,75 @@ public class RoomController {
     // Edit Room - Submit
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateRoom(@PathVariable Long id, @ModelAttribute Room room,
+    public String updateRoom(@PathVariable Long id,
+                             @ModelAttribute Room room,
+                             @RequestParam("mainImage") MultipartFile mainImage,
+                             @RequestParam(value = "roomImages", required = false) MultipartFile[] roomImages,
                              RedirectAttributes redirectAttributes) {
+
         room.setId(id);
-        roomService.save(room);
-        redirectAttributes.addFlashAttribute("success", "Room updated successfully");
-        return "redirect:/manageRoom";
+        Room existingRoom = roomService.getRoomEntityById(id);
+
+        try {
+            // === Xử lý mainImage ===
+            if (!mainImage.isEmpty()) {
+                String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
+                new java.io.File(uploadDir).mkdirs();
+
+                String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(mainImage.getOriginalFilename());
+                Path filePath = Paths.get(uploadDir, fileName);
+                Files.copy(mainImage.getInputStream(), filePath);
+                room.setPhotoUrl("/images/" + fileName);
+            } else {
+                room.setPhotoUrl(existingRoom.getPhotoUrl());
+            }
+
+            // === Gán sẵn ảnh cũ trước khi xét roomImages mới ===
+            room.setImageUrl2(existingRoom.getImageUrl2());
+            room.setImageUrl3(existingRoom.getImageUrl3());
+            room.setImageUrl4(existingRoom.getImageUrl4());
+            room.setImageUrl5(existingRoom.getImageUrl5());
+            room.setImageUrl6(existingRoom.getImageUrl6());
+            room.setImageUrl7(existingRoom.getImageUrl7());
+
+            if (roomImages != null && roomImages.length > 0) {
+                int index = 2;
+                for (MultipartFile image : roomImages) {
+                    if (!image.isEmpty() && index <= 7) {
+                        String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
+                        new java.io.File(uploadDir).mkdirs();
+
+                        String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(image.getOriginalFilename());
+                        Path filePath = Paths.get(uploadDir, fileName);
+                        Files.copy(image.getInputStream(), filePath);
+                        String imageUrl = "/images/" + fileName;
+
+                        switch (index) {
+                            case 2 -> room.setImageUrl2(imageUrl);
+                            case 3 -> room.setImageUrl3(imageUrl);
+                            case 4 -> room.setImageUrl4(imageUrl);
+                            case 5 -> room.setImageUrl5(imageUrl);
+                            case 6 -> room.setImageUrl6(imageUrl);
+                            case 7 -> room.setImageUrl7(imageUrl);
+                        }
+                        index++;
+                    }
+                }
+            }
+
+            roomService.save(room);
+            redirectAttributes.addFlashAttribute("success", "Room updated successfully");
+            return "redirect:/manageRoom";
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Image upload failed: " + e.getMessage());
+            return "redirect:/edit/" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Room update failed: " + e.getMessage());
+            return "redirect:/edit/" + id;
+        }
     }
+
 
     // Delete Room
     @GetMapping("/delete/{id}")

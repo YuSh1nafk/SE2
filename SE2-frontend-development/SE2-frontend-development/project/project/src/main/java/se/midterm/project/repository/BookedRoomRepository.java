@@ -10,6 +10,7 @@ import java.util.List;
 public interface BookedRoomRepository extends JpaRepository<BookedRoom, Long> {
     List<BookedRoom> findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(
             Long roomId, LocalDate checkOut, LocalDate checkIn);
+    List<BookedRoom> findByGuestFullNameContainingIgnoreCase(String keyword);
 
     int countByStatus(BookingStatus status);
 

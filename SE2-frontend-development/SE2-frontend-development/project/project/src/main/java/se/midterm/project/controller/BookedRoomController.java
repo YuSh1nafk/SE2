@@ -145,10 +145,6 @@ public class BookedRoomController {
             LocalDate checkInDate = LocalDate.parse(checkInDateStr);
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
 
-            bookedRoomService.bookRoomPending(
-                    roomId, userId, guestFullName, guestPhone,
-                    checkInDate, checkOutDate, numOfAdults, numOfChildren
-            );
             
             BookingResponse booking = bookedRoomService.bookRoomPending(
                     roomId, userId, guestFullName, guestPhone,
