@@ -36,7 +36,9 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
                 .findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(roomId, checkOutDate, checkInDate);
 
         boolean isBooked = conflictingBookings.stream()
-                .anyMatch(booking -> booking.getStatus() == BookingStatus.Confirmed);
+               .anyMatch(booking ->
+                        booking.getStatus() == BookingStatus.Confirmed ||
+                                booking.getStatus() == BookingStatus.Pending);
 
         if (isBooked) {
             throw new IllegalStateException("Room is already booked for these dates");
