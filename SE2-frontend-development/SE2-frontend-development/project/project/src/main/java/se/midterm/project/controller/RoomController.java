@@ -173,7 +173,6 @@ public class RoomController {
         Room existingRoom = roomService.getRoomEntityById(id);
 
         try {
-            // === Xử lý mainImage ===
             if (!mainImage.isEmpty()) {
                 String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
                 new java.io.File(uploadDir).mkdirs();
@@ -185,8 +184,6 @@ public class RoomController {
             } else {
                 room.setPhotoUrl(existingRoom.getPhotoUrl());
             }
-
-            // === Gán sẵn ảnh cũ trước khi xét roomImages mới ===
             room.setImageUrl2(existingRoom.getImageUrl2());
             room.setImageUrl3(existingRoom.getImageUrl3());
             room.setImageUrl4(existingRoom.getImageUrl4());
@@ -237,10 +234,15 @@ public class RoomController {
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteRoom(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        roomService.deleteRoom(id);
-        redirectAttributes.addFlashAttribute("success", "Room deleted successfully");
+        try {
+            roomService.deleteRoom(id);
+            redirectAttributes.addFlashAttribute("success", "Room deleted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cannot delete room: It is currently booked.");
+        }
         return "redirect:/manageRoom";
     }
+
 
     @PostMapping("/search")
     public String searchRooms(

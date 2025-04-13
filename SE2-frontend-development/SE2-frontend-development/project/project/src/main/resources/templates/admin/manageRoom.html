@@ -81,6 +81,17 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="container-fluid py-4">
   <h1 class="title">Manage Rooms</h1>
+  <!-- Success Alert -->
+  <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <span th:text="${success}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <!-- Error Alert -->
+  <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 
   <div class="table-container">
     <div class="d-flex justify-content-end mb-4">
