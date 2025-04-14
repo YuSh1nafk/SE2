@@ -78,12 +78,15 @@
 
         <!-- Search Box (giữ nguyên) -->
         <div class="search-box">
-            <div class="input-group" style="width: 400px">
-                <input type="text" class="form-control" placeholder="Room ID or Type" th:value="${searchQuery}">
-                <button class="btn1" type="button">
-                    <i class="bi bi-search"></i> Search
-                </button>
-            </div>
+            <form th:action="@{/my-bookings}" method="get" class="search-box">
+                <div class="input-group" style="width: 400px">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Room ID or Type" th:value="${searchQuery}">
+                    <button class="btn1" type="submit">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

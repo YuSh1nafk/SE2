@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import se.midterm.project.model.BookedRoom;
+import se.midterm.project.repository.BookedRoomRepository;
 import se.midterm.project.response.BookingResponse;
 import se.midterm.project.service.IBookedRoomService;
 import se.midterm.project.model.MyUserDetail;
@@ -16,6 +17,7 @@ import se.midterm.project.model.MyUserDetail;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Controller
 public class BookedRoomController {
@@ -26,7 +28,9 @@ public class BookedRoomController {
     private IBookedRoomService bookedRoomService;
 
     @GetMapping("/my-bookings")
-    public String viewBookedRooms(Model model) {
+    public String viewBookedRooms(
+            @RequestParam(value = "search", required = false) String searchQuery,
+            Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             logger.severe("User not authenticated for /my-bookings");
@@ -51,16 +55,28 @@ public class BookedRoomController {
             bookings = bookedRoomService.getConfirmedBookings();
             int pendingCount = bookedRoomService.countPendingBookings();
             model.addAttribute("pendingCount", pendingCount);
-
-            model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "myBooking");
-            return "admin/myBooking";
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
-            model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "myBooking");
-            return "customer/myBooking";
         }
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            try {
+                Long roomId = Long.parseLong(searchQuery.trim());
+                bookings = bookings.stream()
+                        .filter(booking -> booking.getRoom().getId().equals(roomId))
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                String roomType = searchQuery.trim().toLowerCase();
+                bookings = bookings.stream()
+                        .filter(booking -> booking.getRoom().getRoomType().toLowerCase().contains(roomType))
+                        .collect(Collectors.toList());
+            }
+        }
+        model.addAttribute("bookings", bookings);
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("activePage", "myBooking");
+
+        return isAdmin ? "admin/myBooking" : "customer/myBooking";
     }
     @GetMapping("admin/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -177,13 +193,29 @@ public class BookedRoomController {
         return "redirect:/my-bookings";
     }
 
+
+    @Autowired
+    private BookedRoomRepository bookedRoomRepository;
     @PostMapping("/bookings/{bookingId}/cancel")
-    public String cancelBooking(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+    public String cancelBooking(@PathVariable Long bookingId, Authentication authentication, RedirectAttributes redirectAttributes) {
+        MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();
+        Long userId = userDetail.getUser().getId();
+
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
+        if (!booking.getUserId().equals(userId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "You can only cancel your own bookings.");
+            return "redirect:/my-bookings";
+        }
+
         try {
             bookedRoomService.cancelBooking(bookingId);
             redirectAttributes.addFlashAttribute("successMessage", "Booking cancelled successfully.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Cancel failed: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to cancel booking: " + e.getMessage());
         }
         return "redirect:/my-bookings";
     }
