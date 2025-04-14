@@ -21,6 +21,10 @@ public class MyUserDetail implements UserDetails {
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );
     }
+    public String getFullName() {
+        return user.getFullName();
+    }
+
 
     @Override public String getPassword() { return user.getPassword(); }
     @Override public String getUsername() { return user.getUsername(); }
@@ -29,5 +33,8 @@ public class MyUserDetail implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 
-    public String getEmail() { return user.getEmail(); }
+    public boolean hasRole(String role) {
+        return user.getRole().equalsIgnoreCase(role);
+    }
+
 }

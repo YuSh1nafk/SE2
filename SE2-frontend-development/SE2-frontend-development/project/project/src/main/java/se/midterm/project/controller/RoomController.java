@@ -101,9 +101,15 @@ public class RoomController {
     public String addRoom(@ModelAttribute Room room,
                           @RequestParam("mainImage") MultipartFile mainImage,
                           @RequestParam(value = "roomImages", required = false) MultipartFile[] roomImages,
+                          @RequestParam(value = "amenities", required = false) List<String> amenities,
                           RedirectAttributes redirectAttributes) {
 
         try {
+            if (amenities != null && !amenities.isEmpty()) {
+                room.setAmenities(String.join(",", amenities));
+            } else {
+                room.setAmenities("");
+            }
             String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
             java.io.File dir = new java.io.File(uploadDir);
             if (!dir.exists()) {
@@ -167,12 +173,18 @@ public class RoomController {
                              @ModelAttribute Room room,
                              @RequestParam("mainImage") MultipartFile mainImage,
                              @RequestParam(value = "roomImages", required = false) MultipartFile[] roomImages,
+                             @RequestParam(value = "amenities", required = false) List<String> amenities,
                              RedirectAttributes redirectAttributes) {
 
         room.setId(id);
         Room existingRoom = roomService.getRoomEntityById(id);
 
         try {
+            if (amenities != null && !amenities.isEmpty()) {
+                room.setAmenities(String.join(",", amenities));
+            } else {
+                room.setAmenities("");
+            }
             if (!mainImage.isEmpty()) {
                 String uploadDir = System.getProperty("java.io.tmpdir") + "/hotel-images/";
                 new java.io.File(uploadDir).mkdirs();

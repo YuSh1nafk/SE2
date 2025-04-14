@@ -5,6 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,12 @@ import java.time.LocalDate;
 
 @Controller
 public class ProfileController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JpaUserDetailsService userService;
 
     @GetMapping("/admin/profile")
     @PreAuthorize("hasRole('ADMIN')")
@@ -40,25 +49,17 @@ public class ProfileController {
         return "customer/userProfile";
     }
 
-
     @GetMapping("/profile/edit")
     public String editProfile(Model model, Authentication authentication) {
         MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();
         User user = userDetail.getUser();
         model.addAttribute("user", user);
-        if (authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "admin/editAdminProfile";
         } else {
             return "customer/editUserProfile";
         }
     }
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JpaUserDetailsService userService;
 
     @PostMapping("/profile/save")
     public String saveProfile(
@@ -68,12 +69,14 @@ public class ProfileController {
             @RequestParam(value = "position", required = false) String position,
             @RequestParam("profileImage") MultipartFile profileImage,
             Authentication authentication) {
+
         MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();
         User currentUser = userDetail.getUser();
 
         currentUser.setFullName(fullName);
         currentUser.setGender(gender);
         currentUser.setDateOfBirth(LocalDate.parse(dateOfBirth));
+
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) && position != null) {
             currentUser.setPosition(position);
@@ -87,8 +90,15 @@ public class ProfileController {
                 System.err.println("Failed to upload image: " + e.getMessage());
             }
         }
-
         userRepository.save(currentUser);
+        UserDetails updatedUserDetails = userService.loadUserByUsername(currentUser.getUsername());
+        UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
+                updatedUserDetails,
+                authentication.getCredentials(),
+                updatedUserDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/admin/profile";
@@ -107,5 +117,4 @@ public class ProfileController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }

@@ -15,18 +15,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 //@AllArgsConstructor
 public class User {
-    @Getter
+
     private String fullName;
 
     public User(String fullName) {
         this.fullName = fullName;
     }
 
-    @Getter
+
     private String gender;
-    @Getter
+
     private LocalDate dateOfBirth;
-    @Getter
+
     private String position;
 
     public User(String gender, LocalDate dateOfBirth, String position, String profileImageUrl, Long id, String username, String password, String email, String role) {
@@ -40,18 +40,12 @@ public class User {
         this.email = email;
         this.role = role;
     }
-
-    @Setter
-    @Getter
     @Lob
     private byte[] profileImage;
 
-    @Setter
-    @Getter
     private String profileImageContentType;
 
 
-    @Getter
     private String profileImageUrl;
 
     public @NotBlank(message = "Username cannot be blank") String getUsername() {
@@ -66,7 +60,6 @@ public class User {
         return email;
     }
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -84,7 +77,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Getter
     @Column(nullable = false)
     private String role = "USER";
 
