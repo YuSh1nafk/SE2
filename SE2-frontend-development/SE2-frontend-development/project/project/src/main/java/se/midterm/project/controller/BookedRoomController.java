@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import se.midterm.project.model.BookedRoom;
+import se.midterm.project.repository.BookedRoomRepository;
 import se.midterm.project.response.BookingResponse;
 import se.midterm.project.service.IBookedRoomService;
 import se.midterm.project.model.MyUserDetail;
@@ -192,13 +193,29 @@ public class BookedRoomController {
         return "redirect:/my-bookings";
     }
 
+
+    @Autowired
+    private BookedRoomRepository bookedRoomRepository;
     @PostMapping("/bookings/{bookingId}/cancel")
-    public String cancelBooking(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+    public String cancelBooking(@PathVariable Long bookingId, Authentication authentication, RedirectAttributes redirectAttributes) {
+        MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();
+        Long userId = userDetail.getUser().getId();
+
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
+        if (!booking.getUserId().equals(userId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "You can only cancel your own bookings.");
+            return "redirect:/my-bookings";
+        }
+
         try {
             bookedRoomService.cancelBooking(bookingId);
             redirectAttributes.addFlashAttribute("successMessage", "Booking cancelled successfully.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Cancel failed: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to cancel booking: " + e.getMessage());
         }
         return "redirect:/my-bookings";
     }

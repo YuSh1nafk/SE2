@@ -241,12 +241,12 @@
 
     <!-- Cancel Button -->
     <div class="cancel-btn-container">
-      <button class="cancel-btn"
-              th:disabled="${!booking.cancellable}"
-              th:onclick="'cancelBooking(\'' + ${booking.id} + '\', this)'">
-        Cancel Booking
-      </button>
-
+      <form th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post">
+        <button type="submit" class="cancel-btn"
+                th:disabled="${booking.status != 'Pending'}">
+          Cancel Booking
+        </button>
+      </form>
     </div>
 
   </div>

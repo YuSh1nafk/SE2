@@ -107,7 +107,8 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
             throw new IllegalStateException("Only pending bookings can be cancelled");
         }
 
-        bookedRoomRepository.delete(booking);
+        booking.setStatus(BookingStatus.Cancelled);
+        bookedRoomRepository.save(booking);
     }
 
     @Override
