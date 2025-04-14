@@ -16,6 +16,7 @@ import se.midterm.project.model.MyUserDetail;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Controller
 public class BookedRoomController {
@@ -26,7 +27,9 @@ public class BookedRoomController {
     private IBookedRoomService bookedRoomService;
 
     @GetMapping("/my-bookings")
-    public String viewBookedRooms(Model model) {
+    public String viewBookedRooms(
+            @RequestParam(value = "search", required = false) String searchQuery,
+            Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             logger.severe("User not authenticated for /my-bookings");
@@ -51,16 +54,28 @@ public class BookedRoomController {
             bookings = bookedRoomService.getConfirmedBookings();
             int pendingCount = bookedRoomService.countPendingBookings();
             model.addAttribute("pendingCount", pendingCount);
-
-            model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "myBooking");
-            return "admin/myBooking";
         } else {
             bookings = bookedRoomService.getBookingsByUserId(userId);
-            model.addAttribute("bookings", bookings);
-            model.addAttribute("activePage", "myBooking");
-            return "customer/myBooking";
         }
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            try {
+                Long roomId = Long.parseLong(searchQuery.trim());
+                bookings = bookings.stream()
+                        .filter(booking -> booking.getRoom().getId().equals(roomId))
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                String roomType = searchQuery.trim().toLowerCase();
+                bookings = bookings.stream()
+                        .filter(booking -> booking.getRoom().getRoomType().toLowerCase().contains(roomType))
+                        .collect(Collectors.toList());
+            }
+        }
+        model.addAttribute("bookings", bookings);
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("activePage", "myBooking");
+
+        return isAdmin ? "admin/myBooking" : "customer/myBooking";
     }
     @GetMapping("admin/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
