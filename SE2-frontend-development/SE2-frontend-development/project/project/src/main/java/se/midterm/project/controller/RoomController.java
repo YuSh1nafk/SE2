@@ -38,11 +38,12 @@ public class RoomController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<RoomResponse> rooms = roomService.getAllRooms();
-        model.addAttribute("rooms", rooms);
+        List<RoomResponse> randomRooms = roomService.getRandomRooms(5); // lấy 5 phòng ngẫu nhiên
+        model.addAttribute("rooms", randomRooms);
         model.addAttribute("activePage", "home");
         return "home";
     }
+
 
     @GetMapping("/admin/rooms")
     @PreAuthorize("hasRole('ADMIN')")

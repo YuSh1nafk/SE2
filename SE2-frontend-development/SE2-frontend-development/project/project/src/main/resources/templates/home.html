@@ -6,6 +6,61 @@
     <title>Mercy Hotel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/styles.css}">
+    <style>
+        .room-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .room-card-link:hover {
+            transform: translateY(-5px);
+        }
+
+        .room-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            border: none;
+            height: 100%;
+            background-color: #000;
+        }
+
+        .room-img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .room-card:hover .room-img {
+            transform: scale(1.03);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1));
+            color: white;
+        }
+
+        .card-overlay h5 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-overlay p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+        }
+
+
+    </style>
 </head>
 <body>
 <!-- Header Fragment -->
@@ -38,58 +93,79 @@
             </div>
         </div>
         <div class="box2">
-        <div class="row">
-            <div class="col-12">
-                <h2>OUR CHOICE</h2>
-                <p class="lead font-weight-bold " >The best room just for you!</p>
-            </div>
-        </div>
-
-        <div class="row card-container">
-
-            <div class="col-md-4">
-                <div class="card standard-room">
-                    <div class="card-body">
-                        <h5 class="card-title">Standard Room</h5>
-                        <p class="card-text">$100/night</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="card deluxe-room">
-                    <div class="card-body">
-                        <h5 class="card-title">Deluxe Room</h5>
-                        <p class="card-text">$80/night</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card simple-room">
-                    <div class="card-body">
-                        <h5 class="card-title">Couple Simple Room</h5>
-                        <p class="card-text">$60/night</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card superior-room">
-                    <div class="card-body">
-                        <h5 class="card-title">Superior Room</h5>
-                        <p class="card-text">$420/night</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card family-room">
-                    <div class="card-body">
-                        <h5 class="card-title">Family Room</h5>
-                        <p class="card-text">$100/night</p>
-                    </div>
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h2>OUR CHOICE</h2>
+                    <p class="lead font-weight-bold">The best room just for you!</p>
                 </div>
             </div>
 
+            <div class="row card-container g-4">
+                <div class="col-md-4 my-4" th:if="${rooms.size() > 0}">
+                    <a th:href="@{/rooms/{id}(id=${rooms[0].id})}" class="room-card-link">
+                        <div class="card room-card">
+                            <img class="room-img" th:src="@{${rooms[0].photoUrl}}" th:alt="${rooms[0].roomType}" />
+                            <div class="card-overlay">
+                                <h5 th:text="${rooms[0].roomType}">Standard Room</h5>
+                                <p th:text="'$' + ${rooms[0].roomPrice} + '/night'">$100/night</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-8 my-4" th:if="${rooms.size() > 1}">
+                    <a th:href="@{/rooms/{id}(id=${rooms[1].id})}" class="room-card-link">
+                        <div class="card room-card">
+                            <img class="room-img" th:src="@{${rooms[1].photoUrl}}" th:alt="${rooms[1].roomType}" />
+                            <div class="card-overlay">
+                                <h5 th:text="${rooms[1].roomType}">Deluxe Room</h5>
+                                <p th:text="'$' + ${rooms[1].roomPrice} + '/night'">$80/night</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-4 my-4" th:if="${rooms.size() > 2}">
+                    <a th:href="@{/rooms/{id}(id=${rooms[2].id})}" class="room-card-link">
+                        <div class="card room-card">
+                            <img class="room-img" th:src="@{${rooms[2].photoUrl}}" th:alt="${rooms[2].roomType}" />
+                            <div class="card-overlay">
+                                <h5 th:text="${rooms[2].roomType}">Couple Simple Room</h5>
+                                <p th:text="'$' + ${rooms[2].roomPrice} + '/night'">$60/night</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-4 my-4" th:if="${rooms.size() > 3}">
+                    <a th:href="@{/rooms/{id}(id=${rooms[3].id})}" class="room-card-link">
+                        <div class="card room-card">
+                            <img class="room-img" th:src="@{${rooms[3].photoUrl}}" th:alt="${rooms[3].roomType}" />
+                            <div class="card-overlay">
+                                <h5 th:text="${rooms[3].roomType}">Superior Room</h5>
+                                <p th:text="'$' + ${rooms[3].roomPrice} + '/night'">$420/night</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-4 my-4" th:if="${rooms.size() > 4}">
+                    <a th:href="@{/rooms/{id}(id=${rooms[4].id})}" class="room-card-link">
+                        <div class="card room-card">
+                            <img class="room-img" th:src="@{${rooms[4].photoUrl}}" th:alt="${rooms[4].roomType}" />
+                            <div class="card-overlay">
+                                <h5 th:text="${rooms[4].roomType}">Family Room</h5>
+                                <p th:text="'$' + ${rooms[4].roomPrice} + '/night'">$100/night</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-        </div>
+
+    </div>
+
+    </div>
 
 
     </div>

@@ -11,6 +11,7 @@ import java.util.List;
 public interface IRoomService {
     List<RoomResponse> getAllRooms();
     List<RoomResponse> searchRooms(String keyword);
+    List<RoomResponse> getRandomRooms(int count);
 
     RoomResponse getRoomById(Long id);
     Room save(Room room);

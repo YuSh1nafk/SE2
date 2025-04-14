@@ -11,6 +11,7 @@ import se.midterm.project.response.RoomResponse;
 import se.midterm.project.service.IRoomService;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,16 @@ public class RoomServiceImpl implements IRoomService {
                 .collect(Collectors.toList());
         return new PageImpl<>(responses, pageable, roomPage.getTotalElements());
     }
+    @Override
+    public List<RoomResponse> getRandomRooms(int count) {
+        List<Room> allRooms = roomRepository.findAll();
+        Collections.shuffle(allRooms);
+        return allRooms.stream()
+                .limit(count)
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
 
 
     @Override
