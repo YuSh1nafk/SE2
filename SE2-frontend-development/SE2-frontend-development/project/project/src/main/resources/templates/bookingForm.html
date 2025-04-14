@@ -71,15 +71,15 @@
             border: 1px solid #ddd;
             border-radius: 20px;
             overflow: hidden;
-            width: 180px; /* Tăng chiều rộng lên 180px */
-            height: 48px; /* Chiều cao cố định */
+            width: 180px;
+            height: 48px;
             background: white;
         }
 
         .number-input button {
             background-color: #f1f4f6;
             border: none;
-            padding: 0 20px; /* Tăng padding cho nút */
+            padding: 0 20px;
             font-size: 20px;
             cursor: pointer;
             height: 100%;
@@ -139,28 +139,37 @@
 
         .btn-container {
             display: flex;
-            justify-content: center; /* Căn giữa nút Book */
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
             margin-top: 30px;
         }
 
-        .btn-book {
-            padding: 15px 40px; /* Điều chỉnh padding */
+        .btn-action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 45%;
+            height: 54px;
+            padding: 0 20px;
             background-color: #794b31;
-            width: 40%;
             color: white;
-            border: none;
-            border-radius: 25px;
             font-size: 18px;
             font-weight: 600;
-            cursor: pointer;
+            text-align: center;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
-        .btn-book:hover {
+        .btn-action:hover {
             background-color: #b08d7a;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(121, 75, 49, 0.2);
         }
+
 
         @media (max-width: 600px) {
             .form-row {
@@ -168,14 +177,15 @@
                 gap: 0;
             }
 
-            .btn-book {
-                width: 100%; /* Nút full width trên mobile */
+            .btn-action {
+                width: 100%;
                 padding: 15px;
             }
         }
     </style>
 </head>
 <body>
+
 <div class="booking-container">
     <h1 class="booking-title">Booking Now</h1>
     <div th:if="${error}" class="error" th:text="${error}"></div>
@@ -225,8 +235,9 @@
             <input type="checkbox" id="terms" required>
             <label for="terms">I agree to the Terms of Service.</label>
         </div>
-        <div class="btn-container">
-            <button type="submit" class="btn-book">Book</button>
+        <div class="btn-container ">
+            <a th:href="@{/browseRoom}" class="btn-action" >Back</a>
+            <button type="submit" class="btn-action">Book</button>
         </div>
     </form>
 </div>

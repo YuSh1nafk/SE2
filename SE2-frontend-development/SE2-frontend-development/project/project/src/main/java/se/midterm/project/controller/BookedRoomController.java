@@ -219,5 +219,23 @@ public class BookedRoomController {
         }
         return "redirect:/my-bookings";
     }
+    @PostMapping("/bookings/{id}/delete")
+    public String deleteOwnBooking(@PathVariable Long id,
+                                   Authentication authentication,
+                                   RedirectAttributes redirectAttributes) {
+        MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();
+        Long userId = userDetail.getUser().getId();
+
+        try {
+            bookedRoomService.deleteBookingByUser(id, userId);
+            redirectAttributes.addFlashAttribute("successMessage", "Booking deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/my-bookings";
+    }
+
+
 
 }

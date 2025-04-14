@@ -9,6 +9,11 @@ public class UserDto {
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
 
+    @NotEmpty(message = "Full name is required")
+    @Size(min = 2, max = 50, message = "Full name must be between 2 and 50 characters")
+    private String fullName;
+
+
     @Email(message = "Email is not in correct format")
     @NotEmpty(message = "Email is required")
     private String email;
@@ -20,6 +25,12 @@ public class UserDto {
     // Getters and Setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+    public String getFullName() {
+        return fullName;
+    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }

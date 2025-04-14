@@ -1,6 +1,9 @@
 package se.midterm.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,41 +54,52 @@ public class RoomController {
     }
 
     @GetMapping("/browseRoom")
-    public String browseAllRooms(Model model) {
-        List<RoomResponse> rooms = roomService.getAllRooms();
-        model.addAttribute("rooms", rooms);
+    public String browseAllRooms( @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "8") int size,
+                                  Model model) {
+        Page<RoomResponse> roomPage = roomService.getAllRoomsPaginated(PageRequest.of(page, size));
+
+        model.addAttribute("rooms", roomPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", roomPage.getTotalPages());
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }
-        @GetMapping("/manageRoom")
+    @GetMapping("/manageRoom")
     @PreAuthorize("hasRole('ADMIN')")
-    public String manageRoom(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
-        List<RoomResponse> rooms;
-        if (searchQuery != null && !searchQuery.isEmpty()) {
+    public String manageRoom(@RequestParam(value = "search", required = false) String searchQuery,
+                             @RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "15") int size,
+                             Model model) {
+        Page<RoomResponse> roomPage;
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            List<RoomResponse> rooms;
             if (searchQuery.matches("\\d+")) {
                 try {
                     Long roomId = Long.parseLong(searchQuery);
                     RoomResponse room = roomService.getRoomById(roomId);
-                    if (room != null) {
-                        rooms = Collections.singletonList(room); 
-                    } else {
-                        rooms = Collections.emptyList();
-                        model.addAttribute("errorMessage", "Room not found for ID: " + roomId);
-                    }
+                    rooms = room != null ? List.of(room) : List.of();
                 } catch (NumberFormatException e) {
-                    rooms = Collections.emptyList(); 
+                    rooms = List.of();
                     model.addAttribute("errorMessage", "Invalid room ID format");
                 }
             } else {
-                rooms = roomService.searchRoomsByType(searchQuery); 
+                rooms = roomService.searchRoomsByType(searchQuery);
             }
+            model.addAttribute("rooms", rooms);
+            model.addAttribute("searchQuery", searchQuery);
+            model.addAttribute("activePage", "manageRoom");
+            return "admin/manageRoom";
         } else {
-            rooms = roomService.getAllRooms();
+            roomPage = roomService.getAllRoomsPaginated(PageRequest.of(page, size));
+            model.addAttribute("rooms", roomPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", roomPage.getTotalPages());
+            model.addAttribute("searchQuery", "");
+            model.addAttribute("activePage", "manageRoom");
+            return "admin/manageRoom";
         }
-        model.addAttribute("rooms", rooms);
-        model.addAttribute("searchQuery", searchQuery); 
-        model.addAttribute("activePage", "manageRoom");
-        return "admin/manageRoom";
     }
 
     // Add Room - Form
@@ -261,12 +275,22 @@ public class RoomController {
             @RequestParam("checkInDate") String checkInDateStr,
             @RequestParam("checkOutDate") String checkOutDateStr,
             @RequestParam("roomType") String roomType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
             Model model) {
         LocalDate checkInDate = LocalDate.parse(checkInDateStr);
         LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
 
         List<RoomResponse> availableRooms = roomService.getAvailableRoomsByTypeAndDate(roomType, checkInDate, checkOutDate);
-        model.addAttribute("rooms", availableRooms);
+
+        int start = Math.min(page * size, availableRooms.size());
+        int end = Math.min((page + 1) * size, availableRooms.size());
+        List<RoomResponse> paginatedList = availableRooms.subList(start, end);
+        Page<RoomResponse> pagedResult = new PageImpl<>(paginatedList, PageRequest.of(page, size), availableRooms.size());
+
+        model.addAttribute("rooms", pagedResult.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pagedResult.getTotalPages());
         model.addAttribute("activePage", "browseRoom");
         return "browseRoom";
     }

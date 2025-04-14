@@ -19,6 +19,7 @@ public interface IBookedRoomService {
     void declineBooking(Long bookingId);
 
     void cancelBooking(Long bookingId);
+    void deleteBookingByUser(Long bookingId, Long userId);
 
     void deleteBooking(Long bookingId);
     int countPendingBookings();

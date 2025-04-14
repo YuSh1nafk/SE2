@@ -1,5 +1,7 @@
 package se.midterm.project.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import se.midterm.project.model.Room;
 import se.midterm.project.response.RoomResponse;
 
@@ -16,5 +18,6 @@ public interface IRoomService {
     List<RoomResponse> getAvailableRoomsByTypeAndDate(String roomType, LocalDate checkInDate, LocalDate checkOutDate);
     List<RoomResponse> searchRoomsByType(String searchQuery);
     Room getRoomEntityById(Long id);
+    Page<RoomResponse> getAllRoomsPaginated(Pageable pageable);
 
 }

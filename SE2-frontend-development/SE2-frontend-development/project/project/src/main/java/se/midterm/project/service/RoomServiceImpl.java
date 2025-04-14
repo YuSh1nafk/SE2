@@ -1,6 +1,9 @@
 package se.midterm.project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import se.midterm.project.model.Room;
 import se.midterm.project.repository.RoomRepository;
@@ -41,10 +44,20 @@ public class RoomServiceImpl implements IRoomService {
 
     @Override
     public RoomResponse getRoomById(Long id) {
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-        return convertToResponse(room);
+        return roomRepository.findById(id)
+                .map(this::convertToResponse)
+                .orElse(null);
     }
+    @Override
+    public Page<RoomResponse> getAllRoomsPaginated(Pageable pageable) {
+        Page<Room> roomPage = roomRepository.findAll(pageable);
+        List<RoomResponse> responses = roomPage.getContent()
+                .stream()
+                .map(this::mapToRoomResponse)
+                .collect(Collectors.toList());
+        return new PageImpl<>(responses, pageable, roomPage.getTotalElements());
+    }
+
 
     @Override
     public Room save(Room room) {
@@ -90,16 +103,7 @@ public class RoomServiceImpl implements IRoomService {
         // Set other fields as needed
         return response;
     }
-//    @Override
-//    public RoomResponse getRoomById(Long id) {
-//        Room room = roomRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID: " + id));
-//        return mapToRoomResponse(room);
-//    }
-//    @Override
-//    public Room save(Room room) {
-//        return roomRepository.save(room);  // Save the room to the database
-//    }
+
     private RoomResponse mapToRoomResponse(Room room) {
         return new RoomResponse(
                 room.getId(), room.getRoomType(), room.getRoomPrice(), !room.isAvailable(), room.getPhotoUrl(),

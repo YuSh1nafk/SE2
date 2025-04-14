@@ -84,6 +84,21 @@ public class BookedRoomServiceImpl implements IBookedRoomService {
         bookedRoomRepository.save(booking);
         roomRepository.save(room);
     }
+    @Override
+    public void deleteBookingByUser(Long bookingId, Long userId) {
+        BookedRoom booking = bookedRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID: " + bookingId));
+
+        if (!booking.getUserId().equals(userId)) {
+            throw new IllegalStateException("You can only delete your own bookings.");
+        }
+
+        if (booking.getStatus() != BookingStatus.Cancelled && booking.getStatus() != BookingStatus.Cancelled) {
+            throw new IllegalStateException("Only Cancelled or Declined bookings can be deleted.");
+        }
+
+        bookedRoomRepository.delete(booking);
+    }
 
     @Override
     public void declineBooking(Long bookingId) {

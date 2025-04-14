@@ -16,7 +16,9 @@ import java.time.LocalDate;
 //@AllArgsConstructor
 public class User {
 
+    @Column(name = "full_name", nullable = false)
     private String fullName;
+
 
     public User(String fullName) {
         this.fullName = fullName;
@@ -41,6 +43,7 @@ public class User {
         this.role = role;
     }
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] profileImage;
 
     private String profileImageContentType;
@@ -82,6 +85,7 @@ public class User {
 
     public User(UserDto userDto, PasswordEncoder passwordEncoder) {
         this.username = userDto.getUsername();
+        this.fullName = userDto.getFullName();
         this.password = passwordEncoder.encode(userDto.getPassword());
         this.email = userDto.getEmail();
         this.role = "USER";
