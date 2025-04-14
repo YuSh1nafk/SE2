@@ -75,9 +75,11 @@ public class BookedRoomController {
         model.addAttribute("bookings", bookings);
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("activePage", "myBooking");
+        model.addAttribute("hasNoBookings", bookings == null || bookings.isEmpty());
 
         return isAdmin ? "admin/myBooking" : "customer/myBooking";
     }
+    
     @GetMapping("admin/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteBookingByAdmin(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -89,7 +91,6 @@ public class BookedRoomController {
         }
         return "redirect:/my-bookings";
     }
-
 
     @PostMapping("/bookings/cancel-all")
     public String cancelAllBookings(RedirectAttributes redirectAttributes) {
@@ -110,6 +111,7 @@ public class BookedRoomController {
         redirectAttributes.addFlashAttribute("successMessage", "All bookings cancelled successfully.");
         return "redirect:/my-bookings";
     }
+    
     @GetMapping("/booking-confirmation")
     public String showPendingBookings(Model model) {
         List<BookedRoom> pendingBookings = bookedRoomService.getPendingBookings();
@@ -117,10 +119,6 @@ public class BookedRoomController {
 
         return "admin/confirmationPage";
     }
-
-
-
-
 
     @PostMapping("/booking")
     public String bookRoom(
@@ -193,7 +191,6 @@ public class BookedRoomController {
         return "redirect:/my-bookings";
     }
 
-
     @Autowired
     private BookedRoomRepository bookedRoomRepository;
     @PostMapping("/bookings/{bookingId}/cancel")
@@ -219,6 +216,7 @@ public class BookedRoomController {
         }
         return "redirect:/my-bookings";
     }
+    
     @PostMapping("/bookings/{id}/delete")
     public String deleteOwnBooking(@PathVariable Long id,
                                    Authentication authentication,
@@ -235,7 +233,4 @@ public class BookedRoomController {
 
         return "redirect:/my-bookings";
     }
-
-
-
 }
