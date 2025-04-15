@@ -32,7 +32,7 @@ public class SecurityCfg {
                         .requestMatchers("/", "/browseRoom", "/rooms/**", "/search", "/auth/**", "/booking**").permitAll()
                         .anyRequest().permitAll()
                 )
-                .userDetailsService(jpaUserDetailsService) // Explicitly use JpaUserDetailsService
+                .userDetailsService(jpaUserDetailsService)
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/login")

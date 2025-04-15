@@ -10,17 +10,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingResponse {
-    private Long id; // Maps to bookingID
-    private LocalDate checkInDate; // Maps to checkIn
-    private LocalDate checkOutDate; // Maps to checkOut
+    private Long id;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
     private String guestFullName;
-    private String guestPhone; // Maps to guestPhoneNumber
-    private int numOfAdults; // Maps to adults
-    private int numOfChildren; // Maps to children
-    private String bookingConfirmationCode; // Maps to confirmationCode
-    private RoomResponse room; // Contains roomType, roomID (id), price, imageUrl
-    private String status; // Add status as String
-    private boolean cancellable; // Add cancellable flag
+    private String guestPhone;
+    private int numOfAdults;
+    private int numOfChildren;
+    private String bookingConfirmationCode;
+    private RoomResponse room;
+    private String status;
+    private boolean cancellable;
 
     public BookingResponse(Long id, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
         this.id = id;

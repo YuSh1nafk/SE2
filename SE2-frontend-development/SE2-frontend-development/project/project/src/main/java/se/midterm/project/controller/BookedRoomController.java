@@ -137,19 +137,16 @@ public class BookedRoomController {
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
             LocalDate today = LocalDate.now();
 
-            // Validation 1: Check-in date cannot be in the past
             if (checkInDate.isBefore(today)) {
                 redirectAttributes.addFlashAttribute("error", "Check-in date cannot be in the past");
                 return "redirect:/booking?roomId=" + roomId;
             }
 
-            // Validation 2: Checkout date must be after check-in date
             if (!checkOutDate.isAfter(checkInDate)) {
                 redirectAttributes.addFlashAttribute("error", "Checkout date must be after check-in date");
                 return "redirect:/booking?roomId=" + roomId;
             }
 
-            // Validation 3: Phone number must contain only digits
             if (!guestPhone.matches("\\d+")) {
                 redirectAttributes.addFlashAttribute("error", "Phone number must contain only digits");
                 return "redirect:/booking?roomId=" + roomId;

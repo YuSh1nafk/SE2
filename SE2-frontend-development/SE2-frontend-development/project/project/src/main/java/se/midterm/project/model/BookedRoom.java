@@ -32,7 +32,6 @@ public class BookedRoom {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    // Getters and Setters
     public Long getBookingId() { return bookingId; }
     public void setBookingId(Long bookingId) { this.bookingId = bookingId; }
 

@@ -111,7 +111,6 @@ public class RoomServiceImpl implements IRoomService {
         response.setAmenities(room.getAmenities());
         response.setRoomCapacity(room.getRoomCapacity());
         response.setPhotoUrl(room.getPhotoUrl());
-        // Set other fields as needed
         return response;
     }
 

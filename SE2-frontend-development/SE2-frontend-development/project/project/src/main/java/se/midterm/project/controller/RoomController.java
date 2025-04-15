@@ -104,7 +104,6 @@ public class RoomController {
         }
     }
 
-    // Add Room - Form
     @GetMapping("/addRoom")
     @PreAuthorize("hasRole('ADMIN')")
     public String showAddRoomForm(Model model) {
@@ -112,7 +111,6 @@ public class RoomController {
         return "admin/addNewRoom";
     }
 
-    // Add Room - Submit
     @PostMapping("/addRoom")
     public String addRoom(@ModelAttribute Room room,
                           @RequestParam("mainImage") MultipartFile mainImage,
@@ -122,13 +120,11 @@ public class RoomController {
 
         try {
 
-            // Validation 1: Room price must be greater than zero
             if (room.getRoomPrice() == null || room.getRoomPrice().compareTo(BigDecimal.ZERO) <= 0) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Room price must be greater than zero");
                 return "redirect:/addRoom";
             }
 
-            // Validation 2: Check for duplicate room number
             if (roomRepository.existsByRoomNumber(room.getRoomNumber())) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Room number already exists");
                 return "redirect:/addRoom";
@@ -186,7 +182,6 @@ public class RoomController {
     }
 
 
-    // Edit Room - Form
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String editRoomForm(@PathVariable Long id, Model model) {
@@ -195,7 +190,6 @@ public class RoomController {
         return "admin/editRoom";
     }
 
-    // Edit Room - Submit
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String updateRoom(@PathVariable Long id,
@@ -271,7 +265,6 @@ public class RoomController {
     }
 
 
-    // Delete Room
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteRoom(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -297,13 +290,11 @@ public class RoomController {
         LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
         LocalDate today = LocalDate.now();
 
-        // Validation 1: Check-in date cannot be in the past
         if (checkInDate.isBefore(today)) {
             model.addAttribute("error", "Check-in date cannot be in the past");
             return "browseRoom";
         }
 
-        // Validation 2: Checkout date must be after check-in date
         if (!checkOutDate.isAfter(checkInDate)) {
             model.addAttribute("error", "Checkout date must be after check-in date");
             return "browseRoom";

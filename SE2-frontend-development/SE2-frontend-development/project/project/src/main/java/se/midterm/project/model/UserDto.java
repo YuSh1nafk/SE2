@@ -22,7 +22,6 @@ public class UserDto {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
-    // Getters and Setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getFullName() {
