@@ -67,6 +67,10 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div th:replace="~{fragments/searchbox :: searchbox}"></div>
 
+<div th:if="${error}" class="alert alert-danger" role="alert">
+    <p th:text="${error}"></p>
+</div>
+
 <!-- Main Content -->
 <main>
     <div class="container my-5">

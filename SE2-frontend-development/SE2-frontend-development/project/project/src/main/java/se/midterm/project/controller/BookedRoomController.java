@@ -133,6 +133,28 @@ public class BookedRoomController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            LocalDate checkInDate = LocalDate.parse(checkInDateStr);
+            LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
+            LocalDate today = LocalDate.now();
+
+            // Validation 1: Check-in date cannot be in the past
+            if (checkInDate.isBefore(today)) {
+                redirectAttributes.addFlashAttribute("error", "Check-in date cannot be in the past");
+                return "redirect:/booking?roomId=" + roomId;
+            }
+
+            // Validation 2: Checkout date must be after check-in date
+            if (!checkOutDate.isAfter(checkInDate)) {
+                redirectAttributes.addFlashAttribute("error", "Checkout date must be after check-in date");
+                return "redirect:/booking?roomId=" + roomId;
+            }
+
+            // Validation 3: Phone number must contain only digits
+            if (!guestPhone.matches("\\d+")) {
+                redirectAttributes.addFlashAttribute("error", "Phone number must contain only digits");
+                return "redirect:/booking?roomId=" + roomId;
+            }
+
             if (authentication == null || !authentication.isAuthenticated()) {
                 logger.severe("User not authenticated");
                 redirectAttributes.addFlashAttribute("error", "Please log in to book a room.");
@@ -156,10 +178,6 @@ public class BookedRoomController {
                 return "redirect:/browseRoom";
             }
 
-            LocalDate checkInDate = LocalDate.parse(checkInDateStr);
-            LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
-
-            
             BookingResponse booking = bookedRoomService.bookRoomPending(
                     roomId, userId, guestFullName, guestPhone,
                     checkInDate, checkOutDate, numOfAdults, numOfChildren);

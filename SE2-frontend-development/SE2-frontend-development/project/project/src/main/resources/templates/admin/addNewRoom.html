@@ -89,6 +89,10 @@
   <div class="room-form-container">
     <h2 class="form-title">Add New Room</h2>
 
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+      <p th:text="${errorMessage}"></p>
+    </div>
+
     <form th:action="@{/addRoom}" th:object="${room}" method="post" enctype="multipart/form-data">
       <!-- Basic Information -->
       <div class="row">

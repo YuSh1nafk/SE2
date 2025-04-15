@@ -19,6 +19,7 @@ import se.midterm.project.response.RoomResponse;
 import se.midterm.project.service.IRoomService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -120,6 +121,19 @@ public class RoomController {
                           RedirectAttributes redirectAttributes) {
 
         try {
+
+            // Validation 1: Room price must be greater than zero
+            if (room.getRoomPrice() == null || room.getRoomPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Room price must be greater than zero");
+                return "redirect:/addRoom";
+            }
+
+            // Validation 2: Check for duplicate room number
+            if (roomRepository.existsByRoomNumber(room.getRoomNumber())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Room number already exists");
+                return "redirect:/addRoom";
+            }
+
             if (amenities != null && !amenities.isEmpty()) {
                 room.setAmenities(String.join(",", amenities));
             } else {
@@ -281,6 +295,19 @@ public class RoomController {
             Model model) {
         LocalDate checkInDate = LocalDate.parse(checkInDateStr);
         LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
+        LocalDate today = LocalDate.now();
+
+        // Validation 1: Check-in date cannot be in the past
+        if (checkInDate.isBefore(today)) {
+            model.addAttribute("error", "Check-in date cannot be in the past");
+            return "browseRoom";
+        }
+
+        // Validation 2: Checkout date must be after check-in date
+        if (!checkOutDate.isAfter(checkInDate)) {
+            model.addAttribute("error", "Checkout date must be after check-in date");
+            return "browseRoom";
+        }
 
         List<RoomResponse> availableRooms = roomService.getAvailableRoomsByTypeAndDate(roomType, checkInDate, checkOutDate);
 
